@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mis partidas</title>
+  <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+  <link rel="stylesheet" href="/static/estilo.css">
+</head>
+<body>
+<header>
+  <nav><a href="/">Ejercicios</a><a href="/partidas" class="activa">Mis partidas</a><a href="/jugar">Jugar</a><a href="/entrenar">Entrenar</a></nav>
+  <h1>Mis partidas</h1>
+  <p id="cabecera" class="suave">Cargando…</p>
+</header>
+
+<!-- Vista 1: lista de partidas -->
+<section id="vista-lista" class="contenedor">
+  <div class="filtros">
+    <label>Resultado
+      <select id="filtro-resultado">
+        <option value="">Todos</option>
+        <option value="victoria">Victorias</option>
+        <option value="derrota">Derrotas</option>
+        <option value="tablas">Tablas</option>
+      </select>
+    </label>
+    <label>Color
+      <select id="filtro-color">
+        <option value="">Los dos</option>
+        <option value="blancas">Blancas</option>
+        <option value="negras">Negras</option>
+      </select>
+    </label>
+  </div>
+  <div class="tabla-scroll">
+    <table class="lista-partidas">
+      <thead><tr><th>Fecha</th><th>Rival</th><th>Color</th><th>Resultado</th><th>Apertura</th><th>Blunders</th></tr></thead>
+      <tbody id="filas"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Vista 2: revisión de una partida -->
+<section id="vista-partida" class="oculto">
+  <main>
+    <section class="zona-tablero">
+      <div class="tablero-con-barra">
+        <div id="barra" class="barra-eval"><div id="barra-blanca"></div></div>
+        <div id="tablero"></div>
+      </div>
+      <div class="controles">
+        <button data-paso="inicio" title="Inicio">⏮</button>
+        <button data-paso="-1" title="Atrás (←)">◀</button>
+        <button data-paso="1" title="Adelante (→)">▶</button>
+        <button data-paso="fin" title="Final">⏭</button>
+        <button data-paso="error" title="Siguiente error tuyo">Siguiente error ▸</button>
+      </div>
+      <svg id="grafica" class="grafica" viewBox="0 0 600 120" preserveAspectRatio="none"></svg>
+      <p class="suave pie">Gráfica: arriba = ventaja de las blancas, abajo = de las negras. Rayas rojas = tus blunders. Haz clic para ir a esa jugada.</p>
+    </section>
+
+    <section class="panel">
+      <p><a href="/partidas">← Volver a la lista</a></p>
+      <div class="tarjeta">
+        <p id="titulo-partida" class="turno"></p>
+        <p id="datos-partida" class="suave"></p>
+        <p id="recuento" class="suave"></p>
+      </div>
+      <div id="comentario" class="tarjeta comentario"></div>
+      <div id="jugadas" class="jugadas"></div>
+    </section>
+  </main>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+<script src="/static/comun.js"></script>
+<script src="/static/partidas.js"></script>
+</body>
+</html>

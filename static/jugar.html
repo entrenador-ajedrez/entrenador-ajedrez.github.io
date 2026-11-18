@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jugar contra Stockfish</title>
+  <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+  <link rel="stylesheet" href="/static/estilo.css">
+</head>
+<body>
+<header>
+  <nav><a href="/">Ejercicios</a><a href="/partidas">Mis partidas</a><a href="/jugar" class="activa">Jugar</a><a href="/entrenar">Entrenar</a></nav>
+  <h1>Jugar contra Stockfish</h1>
+  <p id="cabecera" class="suave">Elige nivel y color, y pulsa «Nueva partida».</p>
+</header>
+
+<main>
+  <section class="zona-tablero">
+    <div class="tablero-con-barra">
+      <div id="barra" class="barra-eval" title="Evaluación"><div id="barra-blanca" style="height:50%"></div></div>
+      <div id="tablero"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="filtros">
+      <label>Nivel del rival
+        <select id="nivel"></select>
+      </label>
+      <label>Juegas con
+        <select id="color">
+          <option value="w">Blancas</option>
+          <option value="b">Negras</option>
+        </select>
+      </label>
+    </div>
+    <div class="opciones">
+      <label><input type="checkbox" id="avisar" checked> Modo entrenador: avísame si hago un blunder</label>
+      <label><input type="checkbox" id="mostrar-eval"> Mostrar la barra de evaluación</label>
+    </div>
+
+    <div class="tarjeta">
+      <p id="estado" class="turno"></p>
+      <div id="mensaje" class="mensaje"></div>
+      <div id="aviso-botones" class="botones oculto">
+        <button id="btn-deshacer-aviso" class="principal">Deshacer y pensar otra</button>
+        <button id="btn-seguir" class="secundario">Seguir igualmente</button>
+      </div>
+      <div class="botones">
+        <button id="btn-nueva" class="principal">Nueva partida</button>
+        <button id="btn-deshacer" class="secundario">↶ Deshacer</button>
+        <button id="btn-pista" class="secundario">Pista</button>
+        <button id="btn-girar" class="secundario">Girar tablero</button>
+      </div>
+    </div>
+    <div id="jugadas-texto" class="tarjeta linea jugadas-texto"></div>
+  </section>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="/static/comun.js"></script>
+<script src="/static/jugar.js"></script>
+</body>
+</html>

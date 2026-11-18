@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrenar aperturas y finales</title>
+  <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+  <link rel="stylesheet" href="/static/estilo.css">
+</head>
+<body>
+<header>
+  <nav><a href="/">Ejercicios</a><a href="/partidas">Mis partidas</a><a href="/jugar">Jugar</a><a href="/entrenar" class="activa">Entrenar</a></nav>
+  <h1>Entrenar aperturas y finales</h1>
+  <p class="suave">El medio juego lo entrenas con tus propios errores, en la pestaña <a href="/">Ejercicios</a>.</p>
+</header>
+
+<main>
+  <section class="zona-tablero">
+    <div id="tablero"></div>
+  </section>
+
+  <section class="panel">
+    <div class="pestanas">
+      <button id="tab-aperturas" class="pestana activa">Aperturas</button>
+      <button id="tab-finales" class="pestana">Finales</button>
+    </div>
+
+    <!-- Lista para elegir -->
+    <div id="lista" class="lista-entrenos"></div>
+
+    <!-- Sesión de entrenamiento -->
+    <div id="sesion" class="oculto">
+      <div class="tarjeta">
+        <p id="titulo" class="turno"></p>
+        <p id="objetivo" class="suave"></p>
+        <details id="ideas-caja" open><summary>Ideas clave</summary><ul id="ideas"></ul></details>
+        <div id="mensaje" class="mensaje"></div>
+        <div id="aviso-botones" class="botones oculto">
+          <button id="btn-deshacer-aviso" class="principal">Deshacer y probar otra</button>
+          <button id="btn-seguir" class="secundario">Seguir igualmente</button>
+        </div>
+        <div class="botones">
+          <button id="btn-reiniciar" class="secundario">↺ Empezar de nuevo</button>
+          <button id="btn-deshacer" class="secundario">↶ Deshacer</button>
+          <button id="btn-pista" class="secundario">Pista</button>
+          <button id="btn-volver" class="secundario">← Elegir otro</button>
+        </div>
+      </div>
+      <div id="jugadas-texto" class="tarjeta linea jugadas-texto"></div>
+    </div>
+  </section>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="/static/comun.js"></script>
+<script src="/static/entrenar.js"></script>
+</body>
+</html>

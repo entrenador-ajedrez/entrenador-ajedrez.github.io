@@ -1,0 +1,326 @@
+/* ===================================================================
+   Entrenador de ajedrez — estilos
+   Colores propios (no son los de chess.com): tablero gris azulado,
+   acento turquesa y clasificación de jugadas con su propia paleta.
+   =================================================================== */
+:root {
+  --fondo: #1b1e23;
+  --panel: #252930;
+  --panel-2: #2e333b;
+  --borde: #3a404a;
+  --texto: #e9e7e3;
+  --suave: #9ca3ad;
+  --acento: #3fb5ae;
+  --acento-oscuro: #2b8f89;
+  --aviso: #e8c547;
+
+  /* Clasificación de jugadas */
+  --c-mejor: #3fbf8f;
+  --c-excelente: #74c26c;
+  --c-buena: #9cb8a6;
+  --c-libro: #b8946a;
+  --c-imprecision: #e8c547;
+  --c-error: #f08a3c;
+  --c-blunder: #e5534b;
+
+  /* Tablero */
+  --casilla-clara: #e4e2d6;
+  --casilla-oscura: #6e8c99;
+  --radio: 10px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--acento); }
+button {
+  font: inherit; color: var(--texto); background: var(--panel-2);
+  border: 1px solid var(--borde); border-radius: 8px; padding: 8px 14px; cursor: pointer;
+}
+button:hover { border-color: var(--acento); }
+button.principal { background: var(--acento); border-color: var(--acento); color: #0f1d1c; font-weight: 700; }
+button.principal:hover { background: var(--acento-oscuro); }
+button:disabled { opacity: .5; cursor: default; }
+input, select {
+  font: inherit; color: var(--texto); background: var(--panel-2);
+  border: 1px solid var(--borde); border-radius: 8px; padding: 8px 12px;
+}
+.suave { color: var(--suave); }
+.oculto { display: none !important; }
+
+/* ------------------------------------------------------------ estructura */
+.app { display: grid; grid-template-columns: 190px 1fr; min-height: 100vh; }
+.lateral {
+  background: #15181c; padding: 18px 12px; display: flex; flex-direction: column; gap: 4px;
+  position: sticky; top: 0; height: 100vh;
+}
+.logo { font-size: 1.25rem; font-weight: 800; padding: 4px 10px 18px; letter-spacing: -.01em; }
+.logo span { color: var(--acento); }
+.lateral a.nav {
+  display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px;
+  color: var(--texto); text-decoration: none; font-weight: 600;
+}
+.lateral a.nav:hover { background: var(--panel); }
+.lateral a.nav.activa { background: var(--panel-2); }
+.lateral a.nav .ico { width: 22px; text-align: center; font-size: 1.1rem; }
+.lateral a.nav.pronto { opacity: .45; }
+.lateral .pie-lateral { margin-top: auto; font-size: .85rem; }
+.usuario-chip { padding: 10px; border-radius: 8px; background: var(--panel); margin-bottom: 8px; }
+.usuario-chip b { display: block; overflow: hidden; text-overflow: ellipsis; }
+.usuario-chip button { margin-top: 6px; padding: 4px 8px; font-size: .8rem; width: 100%; }
+main#vista { padding: 20px 24px; min-width: 0; }
+
+@media (max-width: 760px) {
+  .app { grid-template-columns: 1fr; }
+  .lateral { position: static; height: auto; flex-direction: row; flex-wrap: wrap; padding: 10px; }
+  .logo { padding: 6px 10px; }
+  .lateral .pie-lateral { margin: 0; width: 100%; }
+  main#vista { padding: 14px 16px; }
+}
+
+/* ------------------------------------------------------------ inicio */
+.inicio { max-width: 520px; margin: 8vh auto; text-align: center; }
+.inicio h1 { font-size: 2rem; margin: 0 0 8px; }
+.inicio form { display: flex; gap: 8px; margin: 24px 0 10px; }
+.inicio input { flex: 1; font-size: 1.05rem; }
+.inicio .tarjeta { text-align: left; margin-top: 28px; }
+.progreso-texto { min-height: 1.5em; color: var(--acento); }
+.error { color: var(--c-blunder); }
+
+.tarjeta { background: var(--panel); border: 1px solid var(--borde); border-radius: var(--radio); padding: 16px 18px; }
+
+/* ------------------------------------------------------------ lista de partidas */
+.cabecera-vista { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.cabecera-vista h1 { margin: 0; font-size: 1.6rem; }
+.filtros { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.tabla-scroll { overflow-x: auto; }
+table.partidas { width: 100%; border-collapse: collapse; background: var(--panel); border-radius: var(--radio); overflow: hidden; }
+table.partidas th, table.partidas td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--borde); white-space: nowrap; }
+table.partidas th { color: var(--suave); font-weight: 600; font-size: .85rem; }
+table.partidas tbody tr { cursor: pointer; }
+table.partidas tbody tr:hover { background: var(--panel-2); }
+.res-victoria { color: var(--c-mejor); font-weight: 700; }
+.res-derrota { color: var(--c-blunder); font-weight: 700; }
+.res-tablas { color: var(--suave); font-weight: 700; }
+.pieza-color { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 6px; border: 1px solid #888; }
+.pieza-color.w { background: #f2f2f2; } .pieza-color.b { background: #222; }
+
+/* ------------------------------------------------------------ vista con tablero */
+.con-tablero { display: flex; gap: 22px; align-items: flex-start; }
+.col-tablero { flex: none; }
+.tablero-y-barra { display: flex; gap: 8px; }
+.tablero {
+  /* el tablero es todo lo grande que permite la ventana */
+  width: min(calc(100vh - 140px), calc(100vw - 190px - 48px - 28px - 22px - 380px));
+  min-width: 280px;
+  aspect-ratio: 1;
+}
+.barra-eval {
+  width: 26px; flex: none; border-radius: 4px; overflow: hidden; position: relative;
+  background: #3b3f45; display: flex; flex-direction: column-reverse;
+}
+.barra-eval.girada { flex-direction: column; }
+.barra-eval .blanca { background: #f1f1ee; transition: height .35s ease; height: 50%; }
+.barra-eval .numero {
+  position: absolute; left: 0; right: 0; text-align: center; font-size: 10px; font-weight: 700;
+  bottom: 4px; color: #333;
+}
+.barra-eval.girada .numero { bottom: auto; top: 4px; }
+.barra-eval.negras-ganan .numero { color: #eee; bottom: auto; top: 4px; }
+.barra-eval.girada.negras-ganan .numero { top: auto; bottom: 4px; }
+
+.jugador { display: flex; align-items: center; gap: 10px; padding: 6px 0 6px 34px; }
+.jugador .avatar {
+  width: 32px; height: 32px; border-radius: 6px; background: var(--panel-2);
+  display: grid; place-items: center; font-weight: 800; color: var(--suave);
+}
+.jugador .nombre { font-weight: 700; }
+.jugador .elo { color: var(--suave); }
+.jugador .reloj {
+  margin-left: auto; background: var(--panel-2); padding: 3px 10px; border-radius: 6px;
+  font-variant-numeric: tabular-nums; font-weight: 700; min-width: 74px; text-align: right;
+}
+.jugador .reloj.activo { background: #e9e7e3; color: #111; }
+
+.panel-derecho {
+  flex: 1; min-width: 300px; max-width: 440px; background: var(--panel); border-radius: var(--radio);
+  display: flex; flex-direction: column; max-height: calc(100vh - 60px); overflow: hidden;
+}
+.panel-derecho .titulo-panel { padding: 14px 16px; font-weight: 800; font-size: 1.1rem; border-bottom: 1px solid var(--borde); }
+.panel-derecho .cuerpo { padding: 12px 16px; overflow-y: auto; flex: 1; }
+.panel-derecho .controles { display: flex; gap: 6px; padding: 10px 12px; border-top: 1px solid var(--borde); }
+.panel-derecho .controles button { flex: 1; font-size: 1.1rem; padding: 8px 0; }
+
+@media (max-width: 1050px) {
+  .con-tablero { flex-direction: column; }
+  .tablero { width: min(calc(100vw - 32px - 34px), 640px); }
+  .panel-derecho { max-width: none; width: 100%; max-height: none; }
+}
+@media (max-width: 760px) {
+  .tablero { width: calc(100vw - 32px - 34px); }
+}
+
+/* Lista de jugadas */
+.lista-jugadas {
+  display: grid; grid-template-columns: 2.6em 1fr 1fr; gap: 1px 4px; font-size: .95rem;
+  font-variant-numeric: tabular-nums;
+}
+.lista-jugadas .num { color: var(--suave); text-align: right; padding: 3px 6px 3px 0; }
+.lista-jugadas .jug { padding: 3px 8px; border-radius: 5px; cursor: pointer; font-weight: 600; }
+.lista-jugadas .jug:hover { background: var(--panel-2); }
+.lista-jugadas .jug.actual { background: var(--acento); color: #0f1d1c; }
+
+/* Línea del motor */
+.linea-motor { font-size: .9rem; padding: 8px 10px; background: var(--panel-2); border-radius: 8px; margin-bottom: 10px; }
+.linea-motor .ev { font-weight: 800; margin-right: 8px; }
+.variante-aviso { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #3a3420; border: 1px solid #6b5a22; padding: 6px 10px; border-radius: 8px; margin-bottom: 10px; font-size: .9rem; }
+
+/* ------------------------------------------------------------ tablero (tema propio) */
+.cm-chessboard.tema-propio .board .square.white { fill: var(--casilla-clara); }
+.cm-chessboard.tema-propio .board .square.black { fill: var(--casilla-oscura); }
+.cm-chessboard.tema-propio .board .border { fill: var(--casilla-oscura); stroke: none; }
+.cm-chessboard.tema-propio .coordinates { pointer-events: none; user-select: none; }
+.cm-chessboard.tema-propio .coordinates .coordinate { font-size: 7px; font-weight: 700; }
+.cm-chessboard.tema-propio .coordinates .coordinate.white { fill: var(--casilla-oscura); }
+.cm-chessboard.tema-propio .coordinates .coordinate.black { fill: var(--casilla-clara); }
+
+/* Marcas: última jugada, selección, casillas legales */
+.cm-chessboard .markers .marker.marca-ultima { fill: rgba(232, 197, 71, .45); }
+.cm-chessboard .markers .marker.marca-seleccion { fill: rgba(63, 181, 174, .5); }
+.cm-chessboard .markers .marker.marker-dot { fill: rgba(15, 22, 26, .45); }
+.cm-chessboard .markers .marker.marker-bevel { fill: rgba(15, 22, 26, .45); }
+
+/* Flechas */
+.cm-chessboard .flecha-mejor .arrow-head { fill: var(--c-mejor); }
+.cm-chessboard .flecha-mejor .arrow-line { stroke: var(--c-mejor); opacity: .85; stroke-linecap: round; }
+.cm-chessboard .flecha-jugada .arrow-head { fill: #6aa7e8; }
+.cm-chessboard .flecha-jugada .arrow-line { stroke: #6aa7e8; opacity: .8; stroke-linecap: round; }
+.cm-chessboard .flecha-error .arrow-head { fill: var(--c-blunder); }
+.cm-chessboard .flecha-error .arrow-line { stroke: var(--c-blunder); opacity: .8; stroke-linecap: round; }
+
+/* ------------------------------------------------------------ revisión */
+.tablero { position: relative; }
+.icono, .icono-jugada {
+  display: inline-grid; place-items: center; border-radius: 50%; font-weight: 900; color: #fff;
+  font-family: system-ui, sans-serif; line-height: 1; flex: none;
+}
+.icono { width: 18px; height: 18px; font-size: 10px; margin-right: 5px; vertical-align: -3px; }
+.icono.grande { width: 30px; height: 30px; font-size: 15px; margin-right: 10px; }
+.icono-jugada {
+  position: absolute; z-index: 5; pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .45); border: 2px solid #fff;
+}
+.c-brillante { background: #29b6c8; }
+.c-genial { background: #5b8bd6; }
+.c-mejor { background: var(--c-mejor); }
+.c-excelente { background: var(--c-excelente); }
+.c-buena { background: var(--c-buena); }
+.c-libro { background: var(--c-libro); }
+.c-imprecision { background: var(--c-imprecision); color: #3a2f00; }
+.c-error { background: var(--c-error); }
+.c-oportunidad { background: #c4527a; }
+.c-blunder { background: var(--c-blunder); }
+
+.comentario {
+  background: var(--panel-2); border-radius: var(--radio); padding: 12px 14px; margin-bottom: 12px;
+  border-left: 4px solid var(--borde);
+}
+.comentario.c-mejor, .comentario.c-brillante, .comentario.c-genial, .comentario.c-excelente,
+.comentario.c-buena, .comentario.c-libro, .comentario.c-imprecision, .comentario.c-error,
+.comentario.c-oportunidad, .comentario.c-blunder { background: var(--panel-2); color: var(--texto); }
+.comentario.c-blunder, .comentario.c-oportunidad, .comentario.mal { border-left-color: var(--c-blunder); }
+.comentario.c-error { border-left-color: var(--c-error); }
+.comentario.c-imprecision { border-left-color: var(--c-imprecision); }
+.comentario.c-mejor, .comentario.c-brillante, .comentario.c-genial, .comentario.ok { border-left-color: var(--c-mejor); }
+.comentario .cabeza { display: flex; align-items: center; font-size: 1.05rem; }
+.comentario .cabeza .ev { margin-left: auto; font-weight: 800; background: var(--fondo); padding: 2px 8px; border-radius: 6px; }
+.comentario p { margin: 8px 0 10px; }
+.botones { display: flex; gap: 8px; flex-wrap: wrap; }
+.botones button { padding: 6px 12px; }
+.variante-aviso .ev { font-weight: 800; margin-left: 8px; }
+
+.resumen { display: flex; flex-direction: column; gap: 14px; }
+.tabla-resumen { width: 100%; border-collapse: collapse; }
+.tabla-resumen th { font-size: .85rem; color: var(--suave); text-align: center; padding-bottom: 6px; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
+.tabla-resumen td { padding: 4px 6px; }
+.tabla-resumen td.num { text-align: center; font-weight: 800; font-variant-numeric: tabular-nums; }
+.tabla-resumen td:nth-child(3) { text-align: center; }
+.caja-prec { margin: 0 auto 8px; width: 74px; text-align: center; font-size: 1.35rem; font-weight: 900; padding: 6px 0; border-radius: 8px; }
+.caja-prec.w { background: #f1f1ee; color: #111; }
+.caja-prec.b { background: #111417; color: #f1f1ee; border: 1px solid var(--borde); }
+.prec-mini { font-size: .8rem; font-weight: 800; background: var(--panel-2); padding: 1px 7px; border-radius: 5px; color: var(--acento); }
+button.ancho { width: 100%; padding: 12px; font-size: 1.05rem; }
+.pequeno { font-size: .85rem; margin: 0; }
+
+.grafica { width: 100%; height: 90px; display: block; border-radius: 8px; cursor: pointer; margin-top: 10px; overflow: hidden; }
+.grafica .fondo { fill: #3b3f45; }
+.grafica .area { fill: #ecebe7; }
+.grafica .media { stroke: #888; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
+.grafica .cursor { stroke: var(--acento); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.grafica .punto { stroke: #fff; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.grafica .punto.c-brillante { fill: #29b6c8; } .grafica .punto.c-genial { fill: #5b8bd6; }
+.grafica .punto.c-imprecision { fill: var(--c-imprecision); } .grafica .punto.c-error { fill: var(--c-error); }
+.grafica .punto.c-oportunidad { fill: #c4527a; } .grafica .punto.c-blunder { fill: var(--c-blunder); }
+
+.analizando { background: var(--panel-2); border-radius: var(--radio); padding: 12px 14px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
+.barra-progreso { height: 8px; background: var(--fondo); border-radius: 4px; overflow: hidden; }
+.barra-progreso span { display: block; height: 100%; background: var(--acento); transition: width .2s; }
+.lista-jugadas .jug { display: inline-flex; align-items: center; }
+
+/* ------------------------------------------------------------ ejercicios / jugar / entrenar */
+.filtros.compactos { gap: 6px; margin-bottom: 8px; }
+.filtros.compactos select, .filtros.compactos button { padding: 6px 8px; font-size: .9rem; }
+.opcion { display: block; font-size: .92rem; margin: 4px 0; }
+.linea-texto { line-height: 1.9; font-variant-numeric: tabular-nums; }
+.linea-texto span[data-p] { padding: 1px 5px; border-radius: 4px; cursor: pointer; }
+.linea-texto span.actual { background: var(--acento); color: #0f1d1c; }
+a.boton {
+  display: inline-block; text-decoration: none; color: var(--texto); background: var(--panel-2);
+  border: 1px solid var(--borde); border-radius: 8px; padding: 6px 12px; font-size: .92rem;
+}
+a.boton:hover { border-color: var(--acento); }
+.txt-bien { color: var(--c-mejor); } .txt-mal { color: var(--c-blunder); }
+.pestanas { display: flex; gap: 6px; margin-bottom: 10px; }
+.pestana.activa { background: var(--acento); border-color: var(--acento); color: #0f1d1c; font-weight: 700; }
+.lista-entrenos { display: flex; flex-direction: column; gap: 8px; }
+.entreno { text-align: left; padding: 10px 12px; line-height: 1.45; background: var(--panel-2); }
+.entreno .suave { font-size: .88rem; }
+.hecho { color: var(--c-mejor); font-size: .85rem; margin-left: 6px; }
+.ideas summary { cursor: pointer; color: var(--acento); }
+.ideas ul { margin: 6px 0; padding-left: 20px; font-size: .93rem; }
+.ideas li { margin: 4px 0; }
+
+/* ------------------------------------------------------------ informe */
+.informe h2 { font-size: 1.2rem; margin: 26px 0 10px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.kpi { background: var(--panel); border-radius: var(--radio); padding: 14px 16px; }
+.kpi b { display: block; font-size: 1.6rem; }
+.kpi span { color: var(--suave); font-size: .88rem; }
+.error-top { display: flex; gap: 14px; margin-bottom: 10px; }
+.error-top h3 { margin: 0 0 4px; }
+.error-top p { margin: 4px 0; }
+.error-top details summary { cursor: pointer; color: var(--acento); }
+.num-top { flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--acento); color: #0f1d1c; display: grid; place-items: center; font-weight: 900; }
+.grafica-evol { width: 100%; height: 140px; display: block; }
+.grafica-evol .guia { stroke: var(--borde); stroke-dasharray: 3 4; vector-effect: non-scaling-stroke; }
+.grafica-evol .eje { fill: var(--suave); font-size: 7px; }
+.grafica-evol .punto-evol { fill: var(--suave); }
+.grafica-evol .media-evol { fill: none; stroke: var(--acento); stroke-width: 2.5; vector-effect: non-scaling-stroke; }
+.dos-columnas { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 0 28px; }
+@media (max-width: 760px) { .dos-columnas { grid-template-columns: 1fr; } }
+.tabla-informe { width: 100%; border-collapse: collapse; background: var(--panel); border-radius: var(--radio); overflow: hidden; font-size: .93rem; }
+.tabla-informe th, .tabla-informe td { padding: 7px 10px; text-align: left; border-bottom: 1px solid var(--borde); }
+.tabla-informe th { color: var(--suave); font-weight: 600; font-size: .82rem; }
+.barrita { width: 110px; height: 8px; background: var(--fondo); border-radius: 4px; overflow: hidden; }
+.barrita span { display: block; height: 100%; background: var(--acento); }
+.barrita.mal span { background: var(--c-blunder); } .barrita.bien span { background: var(--c-mejor); }
+.aviso-analisis { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+
+/* ------------------------------------------------------------ varios */
+.creditos { max-width: 720px; }
+.creditos li { margin: 8px 0; }
+.cargando { color: var(--suave); padding: 30px 0; }

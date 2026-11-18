@@ -1,0 +1,128 @@
+:root {
+  --fondo: #f6f5f2; --panel: #ffffff; --texto: #1d1d1f; --suave: #6b6b70; --borde: #e3e1dc;
+  --acento: #2f6f4f; --bien: #2f8f5b; --mal: #c2463b; --aviso: #b7791f;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #161617; --panel: #202022; --texto: #ececee; --suave: #9a9aa0; --borde: #333336;
+    --acento: #7cc59b; --bien: #5cc28a; --mal: #e57368; --aviso: #e0b057;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--fondo); color: var(--texto);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+header { max-width: 1100px; margin: 0 auto; padding: 20px 16px 0; }
+h1 { margin: 0; font-size: 1.6rem; }
+.suave { color: var(--suave); }
+main {
+  max-width: 1100px; margin: 0 auto; padding: 16px;
+  display: grid; grid-template-columns: minmax(0, 560px) minmax(0, 1fr); gap: 24px; align-items: start;
+}
+@media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+#tablero { width: 100%; }
+.controles { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+.oculto { display: none !important; }
+
+.filtros { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.filtros label { display: flex; flex-direction: column; font-size: .85rem; color: var(--suave); gap: 4px; }
+select, button {
+  font: inherit; color: var(--texto); background: var(--panel);
+  border: 1px solid var(--borde); border-radius: 8px; padding: 6px 12px;
+}
+button { cursor: pointer; }
+button:hover { border-color: var(--acento); }
+button.principal { background: var(--acento); color: var(--panel); border-color: var(--acento); font-weight: 600; }
+
+.tarjeta { background: var(--panel); border: 1px solid var(--borde); border-radius: 12px; padding: 18px; }
+.turno { font-size: 1.15rem; font-weight: 600; margin: 0 0 4px; }
+.mensaje { margin: 12px 0; min-height: 1.5em; }
+.mensaje.bien { color: var(--bien); } .mensaje.mal { color: var(--mal); } .mensaje.aviso { color: var(--aviso); }
+.linea { font-family: ui-monospace, Consolas, monospace; line-height: 1.9; }
+.linea span { padding: 1px 4px; border-radius: 4px; cursor: pointer; }
+.linea span.actual { background: var(--acento); color: var(--panel); }
+.botones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.pie { font-size: .85rem; }
+a { color: var(--acento); }
+
+/* Menú de navegación */
+nav { display: flex; gap: 6px; margin-bottom: 10px; }
+nav a {
+  text-decoration: none; color: var(--suave); padding: 4px 12px;
+  border: 1px solid var(--borde); border-radius: 999px; font-size: .9rem;
+}
+nav a.activa { background: var(--acento); color: var(--panel); border-color: var(--acento); }
+
+/* Lista de partidas */
+.contenedor { max-width: 1100px; margin: 0 auto; padding: 16px; }
+.tabla-scroll { overflow-x: auto; }
+.lista-partidas {
+  width: 100%; border-collapse: separate; border-spacing: 0; background: var(--panel);
+  border: 1px solid var(--borde); border-radius: 12px; overflow: hidden; font-size: .95rem;
+}
+.lista-partidas th, .lista-partidas td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--borde); }
+.lista-partidas th { color: var(--suave); font-weight: 600; }
+.lista-partidas tbody tr { cursor: pointer; }
+.lista-partidas tbody tr:hover { background: var(--fondo); }
+.fila-victoria .res { color: var(--bien); } .fila-derrota .res { color: var(--mal); }
+
+/* Revisión de partida */
+.tablero-con-barra { display: flex; gap: 8px; }
+.tablero-con-barra #tablero { flex: 1; min-width: 0; }
+.barra-eval {
+  width: 18px; flex: none; background: #3a3a3c; border-radius: 4px; overflow: hidden;
+  display: flex; flex-direction: column-reverse; /* el blanco crece desde abajo */
+}
+.barra-eval.girada { flex-direction: column; } /* si juegas con negras, el blanco va arriba */
+#barra-blanca { background: #f2f2f2; transition: height .25s; }
+.grafica { width: 100%; height: 110px; margin-top: 14px; border-radius: 8px; cursor: pointer; display: block; }
+.grafica .fondo-negras { fill: #3a3a3c; }
+.grafica .area-blancas { fill: #e8e8e8; }
+.grafica .linea-media { stroke: var(--suave); stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; }
+.grafica .raya-blunder { stroke: var(--mal); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.grafica .cursor { stroke: var(--acento); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.comentario { margin-top: 12px; }
+.comentario.c-blunder { border-color: var(--mal); } .comentario.c-error { border-color: var(--aviso); }
+.txt-bien { color: var(--bien); }
+.jugadas {
+  margin-top: 12px; display: grid; grid-template-columns: 3em 1fr 1fr; gap: 2px 6px;
+  max-height: 340px; overflow-y: auto; background: var(--panel);
+  border: 1px solid var(--borde); border-radius: 12px; padding: 10px;
+  font-family: ui-monospace, Consolas, monospace; font-size: .95rem;
+}
+.jugadas .num { color: var(--suave); text-align: right; }
+.jugadas .jug { cursor: pointer; padding: 1px 6px; border-radius: 4px; }
+.jugadas .jug.mia { font-weight: 700; }
+.jugadas .jug.actual { background: var(--acento); color: var(--panel); }
+.jugadas .c-blunder { color: var(--mal); } .jugadas .c-error { color: var(--aviso); }
+.jugadas .c-imprecision { color: var(--suave); }
+.jugadas .jug.actual.c-blunder, .jugadas .jug.actual.c-error { color: var(--panel); }
+
+/* Página Jugar */
+.opciones { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; font-size: .95rem; }
+.jugadas-texto { margin-top: 12px; max-height: 220px; overflow-y: auto; }
+a.boton {
+  display: inline-block; text-decoration: none; color: var(--texto); background: var(--panel);
+  border: 1px solid var(--borde); border-radius: 8px; padding: 6px 12px;
+}
+a.boton:hover { border-color: var(--acento); }
+
+/* Página Entrenar */
+.pestanas { display: flex; gap: 6px; margin-bottom: 14px; }
+.pestana.activa { background: var(--acento); color: var(--panel); border-color: var(--acento); font-weight: 600; }
+.lista-entrenos { display: flex; flex-direction: column; gap: 8px; }
+.entreno {
+  text-align: left; padding: 12px 14px; border-radius: 12px; line-height: 1.45;
+}
+.entreno .suave { font-size: .9rem; }
+.hecho { color: var(--bien); font-size: .85rem; margin-left: 6px; }
+#ideas { margin: 6px 0 0; padding-left: 20px; font-size: .95rem; }
+#ideas li { margin: 4px 0; }
+details summary { cursor: pointer; color: var(--acento); }
+
+/* Casillas resaltadas en el tablero */
+#tablero .marca-jugada { box-shadow: inset 0 0 0 4px rgba(214, 170, 60, .8); }
+/* (la verde va después: si una casilla tiene las dos marcas, se ve la verde) */
+#tablero .marca-mala  { box-shadow: inset 0 0 0 4px rgba(194, 70, 59, .85); }
+#tablero .marca-buena { box-shadow: inset 0 0 0 4px rgba(47, 143, 91, .85); }

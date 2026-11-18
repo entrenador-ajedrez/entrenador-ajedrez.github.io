@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrenador de ajedrez</title>
+  <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+  <link rel="stylesheet" href="/static/estilo.css">
+</head>
+<body>
+<header>
+  <nav><a href="/" class="activa">Ejercicios</a><a href="/partidas">Mis partidas</a><a href="/jugar">Jugar</a><a href="/entrenar">Entrenar</a></nav>
+  <h1>Entrenador de ajedrez</h1>
+  <p id="estadisticas" class="suave">Cargando…</p>
+</header>
+
+<main>
+  <section class="zona-tablero">
+    <div id="tablero"></div>
+    <div id="controles-linea" class="controles oculto">
+      <button data-paso="inicio" title="Posición inicial">⏮</button>
+      <button data-paso="-1" title="Atrás">◀</button>
+      <button data-paso="1" title="Adelante">▶</button>
+      <button data-paso="fin" title="Final de la línea">⏭</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="filtros">
+      <label>Fase
+        <select id="filtro-fase">
+          <option value="">Todas</option>
+          <option value="apertura">Apertura</option>
+          <option value="medio juego">Medio juego</option>
+          <option value="final">Final</option>
+        </select>
+      </label>
+      <label>Tipo
+        <select id="filtro-tipo">
+          <option value="">Todos</option>
+          <option value="material">Pierdes material</option>
+          <option value="mate_contra">Permites mate</option>
+          <option value="mate_perdido">Mate no visto</option>
+          <option value="tactica">Táctico / posicional</option>
+        </select>
+      </label>
+      <label>Gravedad
+        <select id="filtro-gravedad">
+          <option value="blunder">Solo blunders</option>
+          <option value="">Blunders y errores</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="tarjeta">
+      <p id="turno" class="turno"></p>
+      <p id="contexto" class="suave"></p>
+      <div id="mensaje" class="mensaje"></div>
+      <div id="linea" class="linea"></div>
+      <div class="botones">
+        <button id="btn-pista" class="secundario">Pista</button>
+        <button id="btn-reintentar" class="secundario oculto">Reintentar</button>
+        <button id="btn-solucion" class="secundario">Ver solución</button>
+        <button id="btn-siguiente" class="principal">Siguiente ▸</button>
+      </div>
+    </div>
+    <p class="suave pie">Arrastra una pieza para jugar. Verde = mejor jugada · Rojo = lo que jugaste en la partida.</p>
+  </section>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="/static/comun.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

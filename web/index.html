@@ -1,0 +1,32 @@
+﻿<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrenador de ajedrez</title>
+  <meta name="description" content="Analiza tus partidas de chess.com con Stockfish y entrena con tus propios errores.">
+  <link rel="stylesheet" href="vendor/cm-chessboard/assets/chessboard.css">
+  <link rel="stylesheet" href="vendor/cm-chessboard/assets/extensions/markers/markers.css">
+  <link rel="stylesheet" href="vendor/cm-chessboard/assets/extensions/arrows/arrows.css">
+  <link rel="stylesheet" href="vendor/cm-chessboard/assets/extensions/promotion-dialog/promotion-dialog.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="app">
+  <nav class="lateral">
+    <div class="logo">♞ Entre<span>nador</span></div>
+    <a class="nav" href="#/partidas" data-ruta="partidas"><span class="ico">▤</span>Mis partidas</a>
+    <a class="nav" href="#/ejercicios" data-ruta="ejercicios"><span class="ico">✎</span>Ejercicios</a>
+    <a class="nav" href="#/jugar" data-ruta="jugar"><span class="ico">♟</span>Jugar</a>
+    <a class="nav" href="#/entrenar" data-ruta="entrenar"><span class="ico">◎</span>Entrenar</a>
+    <a class="nav" href="#/informe" data-ruta="informe"><span class="ico">▦</span>Informe</a>
+    <div class="pie-lateral">
+      <div id="usuario-chip"></div>
+      <a href="#/creditos" class="suave">Créditos y licencias</a>
+    </div>
+  </nav>
+  <main id="vista"></main>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
