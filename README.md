@@ -3,6 +3,8 @@
 Analiza tus partidas de **chess.com** con **Stockfish** y entrena con tus propios errores.
 Funciona entero en el navegador: no hace falta instalar nada ni dar ninguna contraseña.
 
+👉 **Úsalo aquí: https://entrenador-ajedrez.github.io/**
+
 ## Qué hace
 
 - **Mis partidas** — descarga tus partidas de los últimos 3 meses (y las nuevas cada vez que entras;
