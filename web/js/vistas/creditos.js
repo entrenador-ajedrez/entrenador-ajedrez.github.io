@@ -11,7 +11,7 @@ export function montar(vista) {
           <a href="https://github.com/shaack/cm-chessboard" target="_blank" rel="noopener">licencia MIT</a>.</li>
         <li><b>chess.js</b> (reglas del ajedrez) —
           <a href="https://github.com/jhlywa/chess.js" target="_blank" rel="noopener">licencia BSD-2</a>.</li>
-        <li><b>Piezas</b>: diseño de Cburnett (Wikimedia Commons), adaptadas por cm-chessboard —
+        <li><b>Piezas e icono de la web</b>: diseño de Cburnett (Wikimedia Commons), adaptadas por cm-chessboard —
           <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>.</li>
         <li>Datos de las partidas: <a href="https://www.chess.com/news/view/published-data-api" target="_blank" rel="noopener">API pública de chess.com</a>.
           Esta web no está afiliada a chess.com.</li>
