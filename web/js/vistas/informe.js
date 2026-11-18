@@ -1,7 +1,7 @@
 // Informe: estadísticas de tus partidas y tus 3 errores más repetidos, con un consejo para cada uno.
 
 import { todosDeUsuario } from "../almacen.js";
-import { analizarVarias, analizandoVarias, revisar } from "../analizador.js";
+import { revisar } from "../analizador.js";
 import { $, MOTIVOS, RITMOS, esc, fecha, resumen } from "../util.js";
 
 const pct = (a, b) => (b ? (100 * a) / b : 0);
@@ -161,8 +161,7 @@ export async function montar(vista, { estado }) {
 
     const aviso = nAnalizadas < nTotal
       ? `<div class="tarjeta aviso-analisis">Hay ${nAnalizadas} de ${nTotal} partidas analizadas: los datos de errores solo cuentan esas.
-         <button class="principal" id="btn-analizar" ${analizandoVarias() ? "disabled" : ""}>Analizar las ${nTotal - nAnalizadas} que faltan</button>
-         <span class="suave" id="prog-inf"></span></div>` : "";
+         <a class="boton" href="#/partidas">Elegir partidas para analizar</a></div>` : "";
 
     $("#informe").innerHTML = `${aviso}
       <div class="kpis">
@@ -188,15 +187,6 @@ export async function montar(vista, { estado }) {
       </div>
       <p class="suave pequeno">Blunder: jugada que quita 15 puntos o más de probabilidad de ganar; error: 10 o más. Precisión: método público de lichess. Apertura = hasta la jugada 12; final = pocas piezas sin contar peones.</p>`;
 
-    const b = $("#btn-analizar");
-    if (b) b.onclick = async () => {
-      b.disabled = true;
-      const hechas = new Set(juegos.filter((j) => j.rev).map((j) => j.p.url));
-      await analizarVarias(juegos.filter((j) => !hechas.has(j.p.url)).map((j) => j.p), (n, t) => {
-        if (activa && $("#prog-inf")) $("#prog-inf").textContent = `Analizando ${Math.min(n + 1, t)}/${t}…`;
-      });
-      if (activa) calcular();
-    };
   }
 
   await calcular();

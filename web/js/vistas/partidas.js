@@ -1,10 +1,9 @@
 // Pantalla "Mis partidas": lista de partidas guardadas en la memoria.
+// Puedes elegir qué partidas analizar (una a una o todas) y parar el análisis cuando quieras.
 
 import { todosDeUsuario } from "../almacen.js";
-import { analizandoVarias, analizarVarias, revisar } from "../analizador.js";
+import { alCambiarLote, analizarVarias, detenerAnalisis, estadoLote, revisar } from "../analizador.js";
 import { $, MOTIVOS, RITMOS, esc, fecha, resumen } from "../util.js";
-
-let progresoTodas = ""; // texto del análisis en segundo plano (sobrevive al cambiar de pantalla)
 
 export async function montar(vista, { estado, sincronizarAhora }) {
   vista.innerHTML = `
@@ -21,18 +20,23 @@ export async function montar(vista, { estado, sincronizarAhora }) {
       <select id="f-ritmo"><option value="">Todos los ritmos</option>
         <option value="bullet">Bullet</option><option value="blitz">Blitz</option><option value="rapid">Rápida</option><option value="daily">Diaria</option>
       </select>
+      <select id="f-analisis"><option value="">Analizadas y sin analizar</option>
+        <option value="no">Sin analizar</option><option value="si">Analizadas</option></select>
       <button id="btn-actualizar">↻ Buscar partidas nuevas</button>
-      <button id="btn-analizar" class="principal">Analizar todas</button>
-      <span id="estado-analisis" class="suave" style="align-self:center"></span>
     </div>
+    <div class="barra-analisis" id="barra-analisis"></div>
     <div class="tabla-scroll">
       <table class="partidas">
-        <thead><tr><th>Fecha</th><th>Rival</th><th>Color</th><th>Resultado</th><th>Apertura</th><th>Ritmo</th><th>Tu precisión</th></tr></thead>
-        <tbody id="filas"><tr><td colspan="7" class="cargando">Cargando…</td></tr></tbody>
+        <thead><tr>
+          <th class="col-check"><input type="checkbox" id="check-todas" title="Seleccionar todas las visibles sin analizar"></th>
+          <th>Fecha</th><th>Rival</th><th>Color</th><th>Resultado</th><th>Apertura</th><th>Ritmo</th><th>Tu precisión</th>
+        </tr></thead>
+        <tbody id="filas"><tr><td colspan="8" class="cargando">Cargando…</td></tr></tbody>
       </table>
     </div>`;
 
   let partidas = [];
+  const seleccion = new Set(); // urls elegidas para analizar
   let activa = true;
 
   async function cargar() {
@@ -46,31 +50,23 @@ export async function montar(vista, { estado, sincronizarAhora }) {
         return { ...p, r, analizada: !!a, precision };
       })
       .sort((a, b) => b.end_time - a.end_time);
+    for (const url of [...seleccion]) if (partidas.find((p) => p.url === url)?.analizada) seleccion.delete(url);
     pintar();
   }
 
-  function pintarAnalisis() {
-    const faltan = partidas.filter((p) => !p.analizada).length;
-    $("#btn-analizar").disabled = analizandoVarias() || faltan === 0;
-    $("#btn-analizar").textContent = faltan ? `Analizar todas (${faltan})` : "Todas analizadas ✓";
-    $("#estado-analisis").textContent = analizandoVarias() ? progresoTodas : "";
-  }
-
-  async function analizarTodas() {
-    const pendientes = partidas.filter((p) => !p.analizada);
-    await analizarVarias(pendientes, (hechas, total) => {
-      progresoTodas = `Analizando ${hechas + 1 > total ? total : hechas + 1}/${total}… (puedes seguir usando la web)`;
-      if (activa) { pintarAnalisis(); if (hechas > 0) cargar(); }
-    });
-    if (activa) cargar();
-  }
+  const visibles = () => {
+    const fr = $("#f-resultado").value, fc = $("#f-color").value, ft = $("#f-ritmo").value, fa = $("#f-analisis").value;
+    return partidas.filter((p) => (!fr || p.r.resultado === fr) && (!fc || p.r.color === fc) && (!ft || p.time_class === ft) &&
+      (!fa || (fa === "si") === p.analizada));
+  };
 
   function pintar() {
-    const fr = $("#f-resultado").value, fc = $("#f-color").value, ft = $("#f-ritmo").value;
-    const visibles = partidas.filter((p) =>
-      (!fr || p.r.resultado === fr) && (!fc || p.r.color === fc) && (!ft || p.time_class === ft));
-    $("#filas").innerHTML = visibles.length ? visibles.map((p) => `
-      <tr data-id="${esc(p.id)}">
+    const lista = visibles();
+    const enCurso = estadoLote().partidaActual?.url;
+    $("#filas").innerHTML = lista.length ? lista.map((p) => `
+      <tr data-id="${esc(p.id)}" class="${p.url === enCurso ? "analizando-ahora" : ""}">
+        <td class="col-check">${p.analizada ? `<span class="suave" title="Ya analizada">✓</span>`
+          : `<input type="checkbox" data-url="${esc(p.url)}" ${seleccion.has(p.url) ? "checked" : ""} title="Elegir para analizar">`}</td>
         <td>${fecha(p.end_time)}</td>
         <td>${esc(p.r.rival.username)} <span class="suave">(${p.r.rival.rating ?? "?"})</span></td>
         <td><span class="pieza-color ${p.r.color}"></span>${p.r.color === "w" ? "Blancas" : "Negras"}</td>
@@ -78,11 +74,15 @@ export async function montar(vista, { estado, sincronizarAhora }) {
             <span class="suave">${MOTIVOS[p.r.motivo] || ""}</span></td>
         <td>${esc(p.r.apertura)}</td>
         <td>${RITMOS[p.time_class] || esc(p.time_class)}</td>
-        <td>${p.precision != null ? `<b class="prec-mini">${p.precision.toFixed(1)}%</b>` : `<span class="suave">—</span>`}</td>
+        <td>${p.precision != null ? `<b class="prec-mini">${p.precision.toFixed(1)}%</b>`
+          : p.url === enCurso ? `<span class="suave">analizando…</span>` : `<span class="suave">—</span>`}</td>
       </tr>`).join("")
-      : `<tr><td colspan="7" class="suave">No hay partidas con estos filtros.</td></tr>`;
+      : `<tr><td colspan="8" class="suave">No hay partidas con estos filtros.</td></tr>`;
+    const elegibles = lista.filter((p) => !p.analizada);
+    $("#check-todas").checked = elegibles.length > 0 && elegibles.every((p) => seleccion.has(p.url));
+    $("#check-todas").disabled = elegibles.length === 0;
     pintarSync();
-    pintarAnalisis();
+    pintarBarraAnalisis();
   }
 
   function pintarSync() {
@@ -95,18 +95,74 @@ export async function montar(vista, { estado, sincronizarAhora }) {
     $("#btn-actualizar").disabled = s.activa;
   }
 
+  // Barra con los botones de análisis (o el progreso y "Parar" si hay uno en marcha).
+  function pintarBarraAnalisis() {
+    const e = estadoLote();
+    const pendientes = partidas.filter((p) => !p.analizada);
+    const barra = $("#barra-analisis");
+    if (e.activo) {
+      const total = e.total || 1;
+      const avance = (e.hechas + e.progresoPartida) / total;
+      barra.innerHTML = `
+        <div class="progreso-lote">
+          <span>Analizando ${Math.min(e.hechas + 1, e.total)} de ${e.total}…
+            <span class="suave">(puedes seguir usando la web)</span></span>
+          <div class="barra-progreso"><span style="width:${(avance * 100).toFixed(1)}%"></span></div>
+        </div>
+        <button class="peligro" id="btn-parar">⏹ Parar</button>`;
+      $("#btn-parar").onclick = () => { detenerAnalisis(); $("#btn-parar").disabled = true; $("#btn-parar").textContent = "Parando…"; };
+      return;
+    }
+    const n = seleccion.size;
+    barra.innerHTML = `
+      <span class="suave">${pendientes.length ? `${pendientes.length} sin analizar.` : "Todas tus partidas están analizadas ✓"}
+        ${e.parado ? " Análisis parado: lo analizado hasta ese momento está guardado." : ""}</span>
+      <button class="principal" id="btn-seleccionadas" ${n ? "" : "disabled"}>Analizar seleccionadas (${n})</button>
+      <button id="btn-todas" ${pendientes.length ? "" : "disabled"}>Analizar todas (${pendientes.length})</button>
+      ${n ? `<button id="btn-limpiar" class="enlace">Quitar selección</button>` : ""}`;
+    $("#btn-seleccionadas").onclick = () => analizar(partidas.filter((p) => seleccion.has(p.url)));
+    $("#btn-todas").onclick = () => analizar(pendientes);
+    if (n) $("#btn-limpiar").onclick = () => { seleccion.clear(); pintar(); };
+  }
+
+  function analizar(lista) {
+    if (!lista.length) return;
+    seleccion.clear();
+    analizarVarias(lista).finally(() => activa && cargar());
+    pintar();
+  }
+
+  // ---- eventos
   $("#filas").onclick = (ev) => {
+    const check = ev.target.closest("input[type=checkbox]");
+    if (check) {
+      if (check.checked) seleccion.add(check.dataset.url); else seleccion.delete(check.dataset.url);
+      pintarBarraAnalisis();
+      const elegibles = visibles().filter((p) => !p.analizada);
+      $("#check-todas").checked = elegibles.length > 0 && elegibles.every((p) => seleccion.has(p.url));
+      return;
+    }
+    if (ev.target.closest(".col-check")) return; // clic en la columna de casillas: no abrir la partida
     const fila = ev.target.closest("tr[data-id]");
     if (fila) location.hash = `#/partida/${fila.dataset.id}`;
   };
-  for (const id of ["#f-resultado", "#f-color", "#f-ritmo"]) $(id).onchange = pintar;
+  $("#check-todas").onchange = (ev) => {
+    for (const p of visibles()) if (!p.analizada) { if (ev.target.checked) seleccion.add(p.url); else seleccion.delete(p.url); }
+    pintar();
+  };
+  for (const id of ["#f-resultado", "#f-color", "#f-ritmo", "#f-analisis"]) $(id).onchange = pintar;
   $("#btn-actualizar").onclick = () => sincronizarAhora();
-  $("#btn-analizar").onclick = () => analizarTodas();
 
   // Cuando termina una sincronización, recargamos la lista.
-  const alCambiar = () => (estado.sync.activa ? pintarSync() : cargar());
-  estado.oyentes.add(alCambiar);
+  const alCambiarSync = () => (estado.sync.activa ? pintarSync() : cargar());
+  estado.oyentes.add(alCambiarSync);
+  // Progreso del análisis: al terminar cada partida recargamos (para ver su precisión).
+  let hechasAntes = estadoLote().hechas;
+  const bajaLote = alCambiarLote((e) => {
+    if (!activa) return;
+    if (e.hechas !== hechasAntes || !e.activo) { hechasAntes = e.hechas; cargar(); }
+    else pintarBarraAnalisis();
+  });
   await cargar();
-  if (analizandoVarias()) analizarTodas(); // si ya estaba en marcha, nos enganchamos para ver el progreso
-  return () => { activa = false; estado.oyentes.delete(alCambiar); };
+  return () => { activa = false; estado.oyentes.delete(alCambiarSync); bajaLote(); };
 }

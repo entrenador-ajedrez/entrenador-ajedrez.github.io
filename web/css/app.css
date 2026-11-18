@@ -290,6 +290,14 @@ a.boton:hover { border-color: var(--acento); }
 .entreno { text-align: left; padding: 10px 12px; line-height: 1.45; background: var(--panel-2); }
 .entreno .suave { font-size: .88rem; }
 .hecho { color: var(--c-mejor); font-size: .85rem; margin-left: 6px; }
+.subpestanas { display: flex; gap: 4px; margin-bottom: 10px; border-bottom: 1px solid var(--borde); }
+.subpestana { background: none; border: none; border-bottom: 3px solid transparent; border-radius: 0; padding: 6px 10px; color: var(--suave); }
+.subpestana.activa { color: var(--texto); border-bottom-color: var(--acento); font-weight: 700; }
+h3.grupo { font-size: .95rem; margin: 16px 0 8px; }
+h3.grupo .suave { font-weight: 400; font-size: .85rem; }
+.etiqueta { font-size: .75rem; padding: 1px 7px; border-radius: 999px; margin-left: 6px; vertical-align: 1px; }
+.etiqueta.mal { background: rgba(229, 83, 75, .18); color: var(--c-blunder); }
+.nota-linea { background: rgba(232, 197, 71, .12); border-radius: 6px; padding: 6px 8px; font-size: .92rem; }
 .ideas summary { cursor: pointer; color: var(--acento); }
 .ideas ul { margin: 6px 0; padding-left: 20px; font-size: .93rem; }
 .ideas li { margin: 4px 0; }
@@ -319,6 +327,20 @@ a.boton:hover { border-color: var(--acento); }
 .barrita span { display: block; height: 100%; background: var(--acento); }
 .barrita.mal span { background: var(--c-blunder); } .barrita.bien span { background: var(--c-mejor); }
 .aviso-analisis { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+
+/* ------------------------------------------------------------ control del análisis */
+.barra-analisis {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;
+  background: var(--panel); border-radius: var(--radio); padding: 10px 14px;
+}
+.progreso-lote { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 6px; }
+button.peligro { background: var(--c-blunder); border-color: var(--c-blunder); color: #fff; font-weight: 700; }
+button.enlace { background: none; border: none; color: var(--acento); padding: 4px; }
+.col-check { width: 34px; text-align: center; }
+.col-check input { width: 17px; height: 17px; cursor: pointer; accent-color: var(--acento); }
+tr.analizando-ahora { background: rgba(63, 181, 174, .12); }
+.lote-global { background: var(--panel); border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 6px; font-size: .85rem; }
+.lote-global button { padding: 4px 8px; font-size: .8rem; background: var(--c-blunder); border-color: var(--c-blunder); color: #fff; }
 
 /* ------------------------------------------------------------ varios */
 .creditos { max-width: 720px; }

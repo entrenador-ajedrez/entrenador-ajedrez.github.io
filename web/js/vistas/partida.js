@@ -5,7 +5,7 @@
 //   - puedes mover piezas para explorar variantes (Stockfish las evalúa en directo)
 
 import { obtener, todosDeUsuario } from "../almacen.js";
-import { CLASES, MALAS, analisisGuardado, analizarPartida, revisar, textoEval } from "../analizador.js";
+import { AnalisisCancelado, CLASES, MALAS, analisisGuardado, analizarPartida, revisar, textoEval } from "../analizador.js";
 import { MATE, motor, probGanar } from "../motor.js";
 import { FLECHA, Tablero } from "../tablero.js";
 import { $, Chess, MOTIVOS, esc, fecha, formatoReloj, leerPartida, resumen } from "../util.js";
@@ -394,16 +394,24 @@ export async function montar(vista, { parametro, estado }) {
   let activa = true;
 
   pintar(false);
-  const guardado = await analisisGuardado(partida.url);
-  const analisis = guardado || await analizarPartida(partida, (x) => {
-    progreso = x;
-    if (activa && !revision) pintarCuerpo();
-  });
-  if (activa) {
-    revision = revisar(partida, analisis);
-    if (ply > 0) modo = "paso";
-    pintar(false);
-  }
+  // El análisis va aparte: la pantalla no espera a que termine (así puedes salir cuando quieras).
+  (async () => {
+    const alProgreso = (x) => { progreso = x; if (activa && !revision) pintarCuerpo(); };
+    let analisis = await analisisGuardado(partida.url);
+    while (!analisis && activa) {
+      try {
+        analisis = await analizarPartida(partida, alProgreso);
+      } catch (err) {
+        // Si alguien pulsó "Parar" en un lote que incluía esta partida, la analizamos por nuestra cuenta.
+        if (!(err instanceof AnalisisCancelado)) throw err;
+      }
+    }
+    if (analisis && activa) {
+      revision = revisar(partida, analisis);
+      if (ply > 0) modo = "paso";
+      pintar(false);
+    }
+  })();
 
   return () => {
     activa = false;

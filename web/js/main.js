@@ -3,6 +3,7 @@
 
 import { fijarUsuarioActual, usuarioActual } from "./almacen.js";
 import { sincronizar } from "./chesscom.js";
+import { alCambiarLote, detenerAnalisis } from "./analizador.js";
 import { $, $$, esc } from "./util.js";
 import * as vistaInicio from "./vistas/inicio.js";
 import * as vistaPartidas from "./vistas/partidas.js";
@@ -87,7 +88,20 @@ async function entrar(usuario) {
   location.hash = "#/partidas";
 }
 
+// Indicador del análisis en la barra lateral, con "Parar", visible en todas las pantallas.
+function pintarLote(e) {
+  const caja = $("#lote-global");
+  if (!e.activo) { caja.innerHTML = ""; return; }
+  const avance = ((e.hechas + e.progresoPartida) / (e.total || 1)) * 100;
+  caja.innerHTML = `<div class="lote-global">
+    <span>Analizando ${Math.min(e.hechas + 1, e.total)}/${e.total}</span>
+    <div class="barra-progreso"><span style="width:${avance.toFixed(1)}%"></span></div>
+    <button id="btn-parar-global" title="Parar el análisis (lo ya analizado se guarda)">⏹ Parar</button></div>`;
+  $("#btn-parar-global").onclick = (ev) => { detenerAnalisis(); ev.target.disabled = true; ev.target.textContent = "Parando…"; };
+}
+
 async function arrancar() {
+  alCambiarLote(pintarLote);
   try {
     estado.usuario = await usuarioActual();
   } catch {

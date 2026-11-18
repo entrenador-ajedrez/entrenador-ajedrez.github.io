@@ -79,6 +79,11 @@ export class Motor {
     });
   }
 
+  // Corta la búsqueda en curso: Stockfish responde enseguida con lo que tenga hasta ese momento.
+  detener() {
+    this.worker.postMessage("stop");
+  }
+
   /**
    * Elige una jugada para jugar contra ti, con una fuerza limitada.
    *   skill: 0-20 (Skill Level) · elo: ELO aproximado (solo >= 1320) · ms: tiempo para pensar

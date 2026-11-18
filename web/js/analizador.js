@@ -36,11 +36,18 @@ export async function analisisGuardado(url) {
   return a && a.version === VERSION ? a : null;
 }
 
+// Error especial para cuando el usuario pulsa "Parar".
+export class AnalisisCancelado extends Error {
+  constructor() { super("Análisis cancelado"); this.name = "AnalisisCancelado"; }
+}
+
 /**
  * Analiza una partida (si no lo estaba ya). alProgreso(0..1) informa del avance.
  * Si ya se está analizando, se une a ese análisis en vez de empezar otro.
+ * 'senal' = { cancelado: false }: si se pone a true, se para en la siguiente posición
+ * y NO se guarda nada de esa partida (lanza AnalisisCancelado).
  */
-export function analizarPartida(partida, alProgreso = () => {}) {
+export function analizarPartida(partida, alProgreso = () => {}, senal = { cancelado: false }) {
   const enMarcha = enCurso.get(partida.url);
   if (enMarcha) { enMarcha.oyentes.add(alProgreso); return enMarcha.promesa; }
 
@@ -53,6 +60,7 @@ export function analizarPartida(partida, alProgreso = () => {}) {
     const fens = [inicio, ...jugadas.map((j) => j.fen)];
     const evals = [];
     for (const [i, fen] of fens.entries()) {
+      if (senal.cancelado) throw new AnalisisCancelado();
       const g = new Chess(fen);
       if (g.isCheckmate()) {
         evals.push({ cp: g.turn() === "w" ? -MATE : MATE, mate: 0, pv: [], segunda: null });
@@ -69,7 +77,9 @@ export function analizarPartida(partida, alProgreso = () => {}) {
     return analisis;
   })();
   enCurso.set(partida.url, { promesa, oyentes });
-  promesa.finally(() => enCurso.delete(partida.url));
+  // Limpieza al terminar. El .catch evita un aviso de "error no gestionado": quien llamó
+  // a esta función ya recibe el error (por ejemplo, AnalisisCancelado) y decide qué hacer.
+  promesa.finally(() => enCurso.delete(partida.url)).catch(() => {});
   return promesa;
 }
 
@@ -299,22 +309,57 @@ export async function corregirJugada(fen, uci, { profundidad = PROFUNDIDAD } = {
   };
 }
 
-// ------------------------------------------------------------------ analizar muchas
-let colaTodas = null;
-const oyentesTodas = new Set();
-export function analizarVarias(partidas, alProgreso) {
-  oyentesTodas.add(alProgreso);
-  if (colaTodas) return colaTodas; // ya en marcha: solo nos apuntamos para ver el progreso
-  const avisar = (...x) => oyentesTodas.forEach((f) => f(...x));
-  colaTodas = (async () => {
+// ------------------------------------------------------------------ analizar varias
+// Un solo "lote" a la vez. Cualquier pantalla puede ver su estado y pararlo.
+//   estadoLote() -> { activo, hechas, total, partidaActual, progresoPartida, parado }
+let lote = null;
+const oyentesLote = new Set();
+let ultimoEstado = { activo: false, hechas: 0, total: 0, partidaActual: null, progresoPartida: 0, parado: false };
+
+function avisarLote(cambios) {
+  ultimoEstado = { ...ultimoEstado, ...cambios };
+  oyentesLote.forEach((f) => f(ultimoEstado));
+}
+
+export const estadoLote = () => ultimoEstado;
+export const analizandoVarias = () => !!lote;
+
+// Suscribirse a los cambios del lote. Devuelve una función para darse de baja.
+export function alCambiarLote(f) {
+  oyentesLote.add(f);
+  return () => oyentesLote.delete(f);
+}
+
+/** Analiza las partidas indicadas, una tras otra. Si ya hay un lote en marcha, no empieza otro. */
+export function analizarVarias(partidas) {
+  if (lote) return lote.promesa;
+  const senal = { cancelado: false };
+  lote = { senal };
+  avisarLote({ activo: true, hechas: 0, total: partidas.length, partidaActual: null, progresoPartida: 0, parado: false });
+  lote.promesa = (async () => {
     let hechas = 0;
     for (const p of partidas) {
-      avisar(hechas, partidas.length, p);
-      await analizarPartida(p);
+      if (senal.cancelado) break;
+      avisarLote({ partidaActual: p, progresoPartida: 0 });
+      try {
+        await analizarPartida(p, (x) => avisarLote({ progresoPartida: x }), senal);
+      } catch (err) {
+        if (err instanceof AnalisisCancelado) break;
+        throw err;
+      }
       hechas += 1;
+      avisarLote({ hechas });
     }
-    avisar(hechas, partidas.length, null);
-  })().finally(() => { colaTodas = null; oyentesTodas.clear(); });
-  return colaTodas;
+  })().finally(() => {
+    lote = null;
+    avisarLote({ activo: false, partidaActual: null, parado: senal.cancelado });
+  });
+  return lote.promesa;
 }
-export const analizandoVarias = () => !!colaTodas;
+
+/** "Parar": se detiene en la siguiente posición. Lo ya analizado queda guardado. */
+export function detenerAnalisis() {
+  if (!lote) return;
+  lote.senal.cancelado = true;
+  motor().detener(); // que Stockfish no termine de pensar la posición en curso
+}

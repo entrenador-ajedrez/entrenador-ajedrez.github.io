@@ -2,7 +2,7 @@
 // Primero salen los nuevos, luego los que fallaste y al final los que ya resolviste.
 
 import { apuntarProgreso, todoElProgreso, todosDeUsuario } from "../almacen.js";
-import { analizarVarias, analizandoVarias, corregirJugada, revisar, textoEval } from "../analizador.js";
+import { corregirJugada, revisar, textoEval } from "../analizador.js";
 import { FLECHA, Tablero, disposicion, fichaJugador } from "../tablero.js";
 import { $, Chess, esc, fecha, resumen } from "../util.js";
 
@@ -211,25 +211,8 @@ export async function montar(vista, { estado }) {
   if (!ejercicios.length) {
     $("#cuerpo").innerHTML = `<div class="comentario"><p>Los ejercicios salen de tus errores en partidas
       <b>analizadas</b>. Tienes ${analizadas} de ${total} analizadas.</p>
-      <button class="principal" id="btn-analizar">Analizar mis partidas</button>
-      <p class="suave pequeno" id="prog"></p></div>`;
-    $("#btn-analizar").onclick = async () => {
-      $("#btn-analizar").disabled = true;
-      const partidas = await todosDeUsuario("partidas", estado.usuario);
-      const hechas = new Set((await todosDeUsuario("analisis", estado.usuario)).map((a) => a.url));
-      await analizarVarias(partidas.filter((p) => !hechas.has(p.url)), (n, t) => {
-        if (activa && $("#prog")) $("#prog").textContent = `Analizando ${Math.min(n + 1, t)}/${t}…`;
-      });
-      if (activa) { await cargar(); construirCola(); siguiente(); }
-    };
+      <a class="boton" href="#/partidas">Elegir partidas para analizar</a></div>`;
   } else {
-    if (analizadas < total) {
-      // Mientras tanto, seguimos analizando el resto en segundo plano.
-      if (!analizandoVarias()) {
-        const hechas = new Set((await todosDeUsuario("analisis", estado.usuario)).map((a) => a.url));
-        analizarVarias((await todosDeUsuario("partidas", estado.usuario)).filter((p) => !hechas.has(p.url)), () => {});
-      }
-    }
     construirCola();
     siguiente();
   }

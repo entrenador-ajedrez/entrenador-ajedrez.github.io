@@ -1,0 +1,309 @@
+{
+  "aperturas": [
+    {
+      "id": "italiana", "nombre": "Italiana (Giuoco Piano)", "grupo": "Abiertas (1.e4 e5)", "color": "w", "nivel": "Principiante",
+      "familia": "Italian Game", "secuencia": ["e4", "e5", "Nf3", "Nc6", "Bc4", "Bc5", "c3", "Nf6", "d3"],
+      "ideas": ["El alfil en c4 apunta a f7, el punto débil de las negras.", "Plan sencillo: c3 y d3 (o d4), enroque y Re1. Desarrolla antes de atacar.", "No lances Ng5 sin preparación: si las negras se defienden bien, solo pierdes tiempo."],
+      "relacionadas": ["ruy-lopez", "escocesa", "cuatro-caballos"]
+    },
+    {
+      "id": "dos-caballos", "nombre": "Defensa de los Dos Caballos", "grupo": "Abiertas (1.e4 e5)", "color": "b", "nivel": "Intermedio",
+      "familia": "Italian Game", "secuencia": ["e4", "e5", "Nf3", "Nc6", "Bc4", "Nf6"],
+      "ideas": ["En vez de copiar con …Bc5, contraatacas el peón de e4.", "Si 4.Ng5, juega 4…d5 y tras 5.exd5 mejor 5…Na5 (5…Nxd5 permite ataques peligrosos sobre f7).", "Si 4.d3, desarrolla con calma: …Be7 o …Bc5, …O-O y …d6."],
+      "relacionadas": ["petrov", "ruy-berlin", "philidor"]
+    },
+    {
+      "id": "ruy-lopez", "nombre": "Ruy López (Española)", "grupo": "Abiertas (1.e4 e5)", "color": "w", "nivel": "Intermedio",
+      "familia": "Ruy Lopez Opening", "secuencia": ["e4", "e5", "Nf3", "Nc6", "Bb5", "a6", "Ba4", "Nf6", "O-O", "Be7", "Re1"],
+      "ideas": ["El alfil en b5 presiona al caballo que defiende e5.", "Enroca pronto y juega Re1, c3 y d4 para dominar el centro.", "Cuidado: Bxc6 seguido de Nxe5 casi nunca gana un peón al principio (…Qd4 lo recupera)."],
+      "relacionadas": ["italiana", "escocesa", "cuatro-caballos"]
+    },
+    {
+      "id": "ruy-berlin", "nombre": "Española: Defensa Berlinesa", "grupo": "Abiertas (1.e4 e5)", "color": "b", "nivel": "Intermedio",
+      "familia": "Ruy Lopez Opening", "secuencia": ["e4", "e5", "Nf3", "Nc6", "Bb5", "Nf6"],
+      "ideas": ["Defensa muy sólida: contraatacas e4 en vez de defenderte.", "Tras 4.O-O, 4…Nxe4 es la línea principal: el peón se recupera.", "Si las blancas cambian en c6, no te preocupes por los peones doblados: tienes la pareja de alfiles."],
+      "relacionadas": ["dos-caballos", "petrov", "philidor"]
+    },
+    {
+      "id": "escocesa", "nombre": "Escocesa", "grupo": "Abiertas (1.e4 e5)", "color": "w", "nivel": "Principiante",
+      "familia": "Scotch Game", "secuencia": ["e4", "e5", "Nf3", "Nc6", "d4", "exd4", "Nxd4"],
+      "ideas": ["Abres el centro de inmediato con d4: juego activo y directo.", "Tu caballo en d4 es fuerte; vigila …Bc5 y …Qf6, que lo atacan.", "Desarrolla Nc3, Be3 o Bc4 y enroca: el centro abierto favorece al que está más desarrollado."],
+      "relacionadas": ["italiana", "ruy-lopez", "cuatro-caballos"]
+    },
+    {
+      "id": "cuatro-caballos", "nombre": "Cuatro Caballos", "grupo": "Abiertas (1.e4 e5)", "color": "w", "nivel": "Principiante",
+      "familia": "Four Knights Game", "secuencia": ["e4", "e5", "Nf3", "Nc6", "Nc3", "Nf6"],
+      "ideas": ["Apertura de principios puros: caballos antes que alfiles.", "Sigue con Bb5 (Española de 4 caballos) o d4 (Escocesa de 4 caballos).", "Es ideal para aprender a desarrollar sin memorizar mucho."],
+      "relacionadas": ["escocesa", "italiana", "vienesa"]
+    },
+    {
+      "id": "petrov", "nombre": "Defensa Petrov", "grupo": "Abiertas (1.e4 e5)", "color": "b", "nivel": "Intermedio",
+      "familia": "Petrovs Defense", "secuencia": ["e4", "e5", "Nf3", "Nf6"],
+      "ideas": ["Respondes al ataque sobre e5 atacando e4: posiciones simétricas y sólidas.", "Tras 3.Nxe5 juega primero 3…d6 y luego …Nxe4. ¡Si tomas en e4 de inmediato, 4.Qe2 es peligroso!", "Buena opción si buscas una defensa tranquila contra 1.e4."],
+      "relacionadas": ["ruy-berlin", "dos-caballos", "philidor"]
+    },
+    {
+      "id": "philidor", "nombre": "Defensa Philidor", "grupo": "Abiertas (1.e4 e5)", "color": "b", "nivel": "Principiante",
+      "familia": "Philidor Defense", "secuencia": ["e4", "e5", "Nf3", "d6", "d4", "exd4", "Nxd4", "Nf6", "Nc3", "Be7"],
+      "ideas": ["Defiendes e5 con un peón: posición sólida pero algo pasiva.", "Desarrolla …Be7, …O-O y busca …Re8 y …Bf8 para presionar el centro.", "Evita encerrar tu alfil de casillas oscuras con prisas."],
+      "relacionadas": ["petrov", "pirc", "dos-caballos"]
+    },
+    {
+      "id": "vienesa", "nombre": "Vienesa (gambito)", "grupo": "Abiertas (1.e4 e5)", "color": "w", "nivel": "Intermedio",
+      "familia": "Vienna Game", "secuencia": ["e4", "e5", "Nc3", "Nf6", "f4"],
+      "ideas": ["Desarrollas el caballo y luego atacas e5 con f4: juego agresivo.", "Si 3…d5, lo normal es 4.fxe5 Nxe4 5.Nf3: tendrás espacio y ataque.", "Enroca pronto: con f4 jugado tu rey queda más expuesto."],
+      "relacionadas": ["gambito-rey", "cuatro-caballos", "italiana"]
+    },
+    {
+      "id": "gambito-rey", "nombre": "Gambito de Rey", "grupo": "Abiertas (1.e4 e5)", "color": "w", "nivel": "Avanzado",
+      "familia": "Kings Gambit", "secuencia": ["e4", "e5", "f4", "exf4", "Nf3"],
+      "ideas": ["Entregas un peón para abrir la columna f y dominar el centro con d4.", "Desarrolla rápido (Bc4, d4, O-O) y ataca f7.", "Es arriesgado: Stockfish considera 2.f4 algo peor que otras jugadas (unas −0,5). Úsala para practicar el ataque, sabiendo que no es lo más sólido."],
+      "relacionadas": ["vienesa", "italiana", "escocesa"]
+    },
+    {
+      "id": "siciliana-abierta", "nombre": "Contra la Siciliana: Abierta", "grupo": "Semiabiertas", "color": "w", "nivel": "Intermedio",
+      "familia": "Sicilian Defense", "secuencia": ["e4", "c5", "Nf3", "d6", "d4", "cxd4", "Nxd4", "Nf6", "Nc3"],
+      "ideas": ["Abres el centro con d4: tendrás desarrollo rápido y espacio.", "Planes típicos: Be2 u O-O tranquilo, o Be3, f3, Qd2 y enroque largo para atacar.", "Las negras tendrán la columna c semiabierta: vigila tu flanco de dama."],
+      "relacionadas": ["siciliana-alapin", "contra-escandinava", "francesa-avance"]
+    },
+    {
+      "id": "siciliana-alapin", "nombre": "Contra la Siciliana: Alapin (2.c3)", "grupo": "Semiabiertas", "color": "w", "nivel": "Principiante",
+      "familia": "Sicilian Defense", "secuencia": ["e4", "c5", "c3", "Nf6", "e5", "Nd5", "d4", "cxd4", "Nf3"],
+      "ideas": ["Con c3 preparas d4 y evitas toda la teoría de la Siciliana abierta.", "Buscas un centro fuerte de peones; recaptura en d4 con el peón si puedes.", "Muy recomendable a tu nivel: menos memoria y planes claros."],
+      "relacionadas": ["siciliana-abierta", "francesa-avance", "contra-caro-kann"]
+    },
+    {
+      "id": "siciliana-najdorf", "nombre": "Siciliana Najdorf", "grupo": "Semiabiertas", "color": "b", "nivel": "Avanzado",
+      "familia": "Sicilian Defense", "secuencia": ["e4", "c5", "Nf3", "d6", "d4", "cxd4", "Nxd4", "Nf6", "Nc3", "a6"],
+      "ideas": ["…a6 controla b5 y prepara …e5 o …e6 y …b5.", "Juego muy rico pero con mucha teoría: ideal si te gustan las posiciones complicadas.", "La columna c y la ruptura …b5 son tus armas."],
+      "relacionadas": ["siciliana-dragon", "francesa", "caro-kann-clasica"]
+    },
+    {
+      "id": "siciliana-dragon", "nombre": "Siciliana Dragón", "grupo": "Semiabiertas", "color": "b", "nivel": "Avanzado",
+      "familia": "Sicilian Defense", "secuencia": ["e4", "c5", "Nf3", "d6", "d4", "cxd4", "Nxd4", "Nf6", "Nc3", "g6"],
+      "ideas": ["Tu alfil en g7 (el «dragón») presiona la gran diagonal hasta b2.", "Enroca corto y ataca por el flanco de dama: …Rc8, …Ne5, …Nc4.", "Cuidado con el ataque blanco h4-h5: abrir tu enroque es su plan."],
+      "relacionadas": ["siciliana-najdorf", "moderna", "pirc"]
+    },
+    {
+      "id": "caro-kann-clasica", "nombre": "Caro-Kann Clásica", "grupo": "Semiabiertas", "color": "b", "nivel": "Principiante",
+      "familia": "Caro Kann Defense", "secuencia": ["e4", "c6", "d4", "d5", "Nc3", "dxe4", "Nxe4", "Bf5"],
+      "ideas": ["Primero …dxe4 y luego …Bf5: tu alfil sale antes de cerrar la cadena con …e6.", "Si el caballo te ataca el alfil (Ng3), retrocede a g6.", "Después: …e6, …Nd7, …Ngf6 y enroque. Posición sólida."],
+      "relacionadas": ["caro-kann-avance", "caro-kann-cambio", "francesa"]
+    },
+    {
+      "id": "caro-kann-avance", "nombre": "Caro-Kann: Variante del Avance", "grupo": "Semiabiertas", "color": "b", "nivel": "Intermedio",
+      "familia": "Caro Kann Defense", "secuencia": ["e4", "c6", "d4", "d5", "e5", "Bf5", "Nf3", "e6"],
+      "ideas": ["Las blancas ganan espacio con e5: saca tu alfil fuera (…Bf5) antes de jugar …e6.", "Tu ruptura clave es …c5 para atacar la cadena blanca.", "Desarrolla …Nd7, …Ne7 y …c5; el caballo de e7 puede ir a f5 o c6."],
+      "relacionadas": ["caro-kann-clasica", "francesa", "caro-kann-cambio"]
+    },
+    {
+      "id": "caro-kann-cambio", "nombre": "Caro-Kann: Variante del Cambio", "grupo": "Semiabiertas", "color": "b", "nivel": "Principiante",
+      "familia": "Caro Kann Defense", "secuencia": ["e4", "c6", "d4", "d5", "exd5", "cxd5", "Bd3", "Nc6"],
+      "ideas": ["Estructura simétrica: tu plan es el ataque de minorías con …b5-…b4.", "Saca el alfil de casillas blancas a g4 o f5 antes de …e6.", "Las blancas suelen buscar ataque en el flanco de rey: no te descuides."],
+      "relacionadas": ["caro-kann-clasica", "caro-kann-avance", "eslava"]
+    },
+    {
+      "id": "contra-caro-kann", "nombre": "Contra la Caro-Kann: Avance", "grupo": "Semiabiertas", "color": "w", "nivel": "Intermedio",
+      "familia": "Caro Kann Defense", "secuencia": ["e4", "c6", "d4", "d5", "e5", "Bf5", "Nf3", "e6", "Be2"],
+      "ideas": ["Ganas espacio con e5 y desarrollas con calma (Nf3, Be2, O-O).", "Plan típico: c3, Nbd2 y a veces c4 para abrir el centro.", "Si las negras juegan …c5, valora dxc5 para jugar contra el peón de d5."],
+      "relacionadas": ["francesa-avance", "siciliana-alapin", "contra-escandinava"]
+    },
+    {
+      "id": "francesa", "nombre": "Defensa Francesa", "grupo": "Semiabiertas", "color": "b", "nivel": "Intermedio",
+      "familia": "French Defense", "secuencia": ["e4", "e6", "d4", "d5", "Nc3", "Nf6"],
+      "ideas": ["Defensa sólida: atacas el centro con …d5 y luego con …c5.", "Tu alfil de casillas blancas queda encerrado: planea sacarlo por b7 o d7 o cambiarlo.", "Si las blancas juegan e5, ataca la cadena con …c5 y …f6."],
+      "relacionadas": ["caro-kann-clasica", "caro-kann-avance", "gambito-dama-rehusado"]
+    },
+    {
+      "id": "francesa-avance", "nombre": "Contra la Francesa: Avance", "grupo": "Semiabiertas", "color": "w", "nivel": "Intermedio",
+      "familia": "French Defense", "secuencia": ["e4", "e6", "d4", "d5", "e5", "c5", "c3", "Nc6", "Nf3"],
+      "ideas": ["La cadena c3-d4-e5 te da espacio; defiéndela bien.", "Las negras presionarán d4 con …Qb6 y …Nc6: tenlo vigilado.", "Tu juego está en el flanco de rey: f4-f5 o piezas hacia el rey negro."],
+      "relacionadas": ["contra-caro-kann", "siciliana-alapin", "siciliana-abierta"]
+    },
+    {
+      "id": "escandinava", "nombre": "Defensa Escandinava", "grupo": "Semiabiertas", "color": "b", "nivel": "Principiante",
+      "familia": "Scandinavian Defense", "secuencia": ["e4", "d5", "exd5", "Qxd5", "Nc3", "Qa5"],
+      "ideas": ["Golpeas el centro desde la primera jugada. La dama sale pronto pero a una casilla segura (a5).", "Sigue con …Nf6, …Bf5 o …Bg4, …c6 y …e6.", "Evita mover la dama más veces: desarrolla el resto de piezas."],
+      "relacionadas": ["caro-kann-clasica", "alekhine", "francesa"]
+    },
+    {
+      "id": "contra-escandinava", "nombre": "Contra la Escandinava", "grupo": "Semiabiertas", "color": "w", "nivel": "Principiante",
+      "familia": "Scandinavian Defense", "secuencia": ["e4", "d5", "exd5", "Qxd5", "Nc3", "Qa5", "d4", "Nf6", "Nf3"],
+      "ideas": ["Ataca a la dama negra mientras desarrollas: ganas tiempos.", "Plan: d4, Nf3, Bc4 o Bd2, O-O. Tu ventaja es el desarrollo.", "Cuidado con la clavada …Bg4 sobre tu caballo de f3."],
+      "relacionadas": ["contra-caro-kann", "siciliana-alapin", "francesa-avance"]
+    },
+    {
+      "id": "pirc", "nombre": "Defensa Pirc", "grupo": "Semiabiertas", "color": "b", "nivel": "Intermedio",
+      "familia": "Pirc Defense", "secuencia": ["e4", "d6", "d4", "Nf6", "Nc3", "g6"],
+      "ideas": ["Dejas que las blancas ocupen el centro para atacarlo después.", "Desarrollo: …Bg7, …O-O y rupturas …e5 o …c5.", "Si las blancas atacan con f4 y e5, reacciona rápido en el centro."],
+      "relacionadas": ["moderna", "india-rey", "siciliana-dragon"]
+    },
+    {
+      "id": "alekhine", "nombre": "Defensa Alekhine", "grupo": "Semiabiertas", "color": "b", "nivel": "Avanzado",
+      "familia": "Alekhines Defense", "secuencia": ["e4", "Nf6", "e5", "Nd5", "d4", "d6"],
+      "ideas": ["Provocas que los peones blancos avancen para luego atacarlos.", "Tu plan: …d6, …Bg4 o …g6 y presionar el centro adelantado.", "El caballo puede ser perseguido: no lo dejes sin casillas."],
+      "relacionadas": ["escandinava", "pirc", "moderna"]
+    },
+    {
+      "id": "moderna", "nombre": "Defensa Moderna", "grupo": "Semiabiertas", "color": "b", "nivel": "Intermedio",
+      "familia": "Modern Defense", "secuencia": ["e4", "g6", "d4", "Bg7", "Nc3", "d6"],
+      "ideas": ["Muy flexible: el alfil en g7 presiona el centro desde lejos.", "Juega …d6, …Nf6 o …c6 y …d5 según lo que hagan las blancas.", "No te quedes demasiado pasivo: necesitas una ruptura (…e5 o …c5)."],
+      "relacionadas": ["pirc", "siciliana-dragon", "india-rey"]
+    },
+    {
+      "id": "gambito-dama", "nombre": "Gambito de Dama", "grupo": "Cerradas (1.d4)", "color": "w", "nivel": "Intermedio",
+      "familia": "Queens Gambit", "secuencia": ["d4", "d5", "c4", "e6", "Nc3", "Nf6", "Bg5", "Be7", "e3"],
+      "ideas": ["c4 ataca el centro negro; no es un gambito real porque el peón se recupera.", "Plan clásico: Bg5, e3, Nf3, Bd3 y O-O.", "Una idea fuerte es el ataque de minorías (b4-b5) en el flanco de dama."],
+      "relacionadas": ["londres", "inglesa", "reti"]
+    },
+    {
+      "id": "gambito-dama-rehusado", "nombre": "Gambito de Dama Rehusado", "grupo": "Cerradas (1.d4)", "color": "b", "nivel": "Principiante",
+      "familia": "Queens Gambit", "secuencia": ["d4", "d5", "c4", "e6", "Nc3", "Nf6"],
+      "ideas": ["Mantienes el peón de d5 con …e6: defensa muy sólida.", "Desarrolla …Be7, …O-O, …Nbd7 y busca liberarte con …c5 o …e5.", "Tu alfil de casillas blancas es el problema: busca sacarlo por b7."],
+      "relacionadas": ["eslava", "gambito-dama-aceptado", "nimzo-india"]
+    },
+    {
+      "id": "gambito-dama-aceptado", "nombre": "Gambito de Dama Aceptado", "grupo": "Cerradas (1.d4)", "color": "b", "nivel": "Intermedio",
+      "familia": "Queens Gambit", "secuencia": ["d4", "d5", "c4", "dxc4", "Nf3", "Nf6", "e3", "e6"],
+      "ideas": ["Tomas el peón de c4 sin intentar mantenerlo: a cambio juegas …c5 libremente.", "No defiendas el peón con …b5: suele salir mal.", "Plan: …e6, …c5, …a6 y desarrollo rápido."],
+      "relacionadas": ["gambito-dama-rehusado", "eslava", "peon-dama"]
+    },
+    {
+      "id": "eslava", "nombre": "Defensa Eslava", "grupo": "Cerradas (1.d4)", "color": "b", "nivel": "Intermedio",
+      "familia": "Slav Defense", "secuencia": ["d4", "d5", "c4", "c6", "Nf3", "Nf6", "Nc3", "dxc4"],
+      "ideas": ["Como la Caro-Kann pero contra 1.d4: defiendes d5 con …c6 sin encerrar el alfil.", "Tras …dxc4, saca el alfil a f5 y recupera espacio con …e6.", "Si ya juegas la Caro-Kann, la Eslava te resultará familiar."],
+      "relacionadas": ["gambito-dama-rehusado", "caro-kann-cambio", "peon-dama"]
+    },
+    {
+      "id": "londres", "nombre": "Sistema Londres", "grupo": "Cerradas (1.d4)", "color": "w", "nivel": "Principiante",
+      "familia": "London System", "secuencia": ["d4", "d5", "Bf4", "Nf6", "e3", "e6", "Nf3", "c5", "c3"],
+      "ideas": ["Siempre la misma estructura: d4, Bf4, e3, Nf3, c3, Bd3, Nbd2. ¡Poca teoría!", "Tu alfil sale antes de jugar e3, para que no se quede encerrado.", "Plan de ataque: Ne5 y avanzar en el flanco de rey."],
+      "relacionadas": ["gambito-dama", "reti", "inglesa"]
+    },
+    {
+      "id": "peon-dama", "nombre": "Peón de Dama con …d5 y …Nf6", "grupo": "Cerradas (1.d4)", "color": "b", "nivel": "Principiante",
+      "familia": "Queens Pawn Opening", "secuencia": ["d4", "d5", "Nf3", "Nf6", "e3", "e6"],
+      "ideas": ["Respuesta de principios contra 1.d4 sin c4: ocupa el centro y desarrolla.", "Sigue con …Be7 o …Bd6, …O-O y …c5 para atacar d4.", "Si las blancas juegan Bf4 (Londres), …c5 y …Qb6 atacando b2 es una buena idea."],
+      "relacionadas": ["gambito-dama-rehusado", "eslava", "nimzo-india"]
+    },
+    {
+      "id": "india-rey", "nombre": "India de Rey", "grupo": "Cerradas (1.d4)", "color": "b", "nivel": "Avanzado",
+      "familia": "Kings Indian Defense", "secuencia": ["d4", "Nf6", "c4", "g6", "Nc3", "Bg7", "e4", "d6", "Nf3", "O-O"],
+      "ideas": ["Dejas el centro a las blancas y lo atacas después con …e5 o …c5.", "Plan típico: …e5, y si el centro se cierra, ataque en el flanco de rey con …f5.", "Posiciones de doble filo: ideal si te gusta atacar."],
+      "relacionadas": ["moderna", "pirc", "holandesa"]
+    },
+    {
+      "id": "nimzo-india", "nombre": "Nimzo-India", "grupo": "Cerradas (1.d4)", "color": "b", "nivel": "Avanzado",
+      "familia": "Nimzo Indian Defense", "secuencia": ["d4", "Nf6", "c4", "e6", "Nc3", "Bb4"],
+      "ideas": ["Clavas el caballo de c3 para controlar e4.", "No temas cambiar el alfil por el caballo: doblas los peones blancos.", "Plan: …O-O, …d5 o …b6 y …Bb7 para dominar e4."],
+      "relacionadas": ["gambito-dama-rehusado", "india-rey", "peon-dama"]
+    },
+    {
+      "id": "holandesa", "nombre": "Defensa Holandesa", "grupo": "Cerradas (1.d4)", "color": "b", "nivel": "Avanzado",
+      "familia": "Dutch Defense", "secuencia": ["d4", "f5", "g3", "Nf6", "Bg2", "e6", "Nf3", "Be7"],
+      "ideas": ["Controlas e4 con el peón de f5 y buscas ataque en el flanco de rey.", "Tu rey queda algo debilitado: enroca pronto.", "Planes: …O-O, …d6, …Qe8-…Qh5 para atacar."],
+      "relacionadas": ["india-rey", "moderna", "peon-dama"]
+    },
+    {
+      "id": "inglesa", "nombre": "Apertura Inglesa", "grupo": "De flanco", "color": "w", "nivel": "Intermedio",
+      "familia": "English Opening", "secuencia": ["c4", "e5", "Nc3", "Nf6", "g3", "d5", "cxd5", "Nxd5", "Bg2"],
+      "ideas": ["Es como una Siciliana con un tiempo más: controlas d5 desde el flanco.", "El alfil en g2 presiona la gran diagonal.", "Juego posicional: Nf3, O-O, d3 y avance de peones en el flanco de dama."],
+      "relacionadas": ["reti", "gambito-dama", "londres"]
+    },
+    {
+      "id": "reti", "nombre": "Apertura Réti", "grupo": "De flanco", "color": "w", "nivel": "Intermedio",
+      "familia": "Reti Opening", "secuencia": ["Nf3", "d5", "g3", "Nf6", "Bg2", "e6", "O-O", "Be7", "d3"],
+      "ideas": ["Controlas el centro con piezas en vez de con peones.", "Fianchetto (g3 y Bg2) y enroque rápido: rey muy seguro.", "Más tarde, ataca el centro negro con c4 o e4."],
+      "relacionadas": ["inglesa", "londres", "gambito-dama"]
+    }
+  ],
+  "finales": [
+    {
+      "id": "mate-dama", "nombre": "Mate con dama", "grupo": "Mates básicos", "tipo": "Mates", "nivel": "Imprescindible",
+      "fen": "8/8/8/4k3/8/8/8/3QK3 w - - 0 1", "color": "w", "objetivo": "mate", "referencia": 10,
+      "ideas": ["Usa la dama para encerrar al rey en una caja cada vez más pequeña (a un salto de caballo).", "Cuando esté en el borde, acerca TU rey: la dama sola no puede dar mate.", "¡Cuidado con el ahogado! Comprueba siempre que el rey rival tenga alguna jugada."]
+    },
+    {
+      "id": "mate-torre", "nombre": "Mate con torre", "grupo": "Mates básicos", "tipo": "Mates", "nivel": "Imprescindible",
+      "fen": "8/8/8/4k3/8/8/8/R3K3 w - - 0 1", "color": "w", "objetivo": "mate", "referencia": 20,
+      "ideas": ["La torre corta al rey rival una fila o columna; tu rey se acerca.", "Pon tu rey enfrente del suyo (oposición) y da jaque con la torre: así lo empujas.", "Si el rey rival ataca tu torre, aléjala al otro lado del tablero."]
+    },
+    {
+      "id": "escalera", "nombre": "Escalera con dos torres", "grupo": "Mates básicos", "tipo": "Mates", "nivel": "Fácil",
+      "fen": "8/8/8/3k4/8/8/8/R3K2R w - - 0 1", "color": "w", "objetivo": "mate", "referencia": 8,
+      "ideas": ["Una torre corta una fila, la otra da jaque en la siguiente: el rey retrocede.", "Alternándolas como una escalera llegas al borde y das mate.", "Si el rey se acerca a una torre, llévala lejos por el mismo lado."]
+    },
+    {
+      "id": "mate-dos-alfiles", "nombre": "Mate con dos alfiles", "grupo": "Mates básicos", "tipo": "Mates", "nivel": "Avanzado",
+      "fen": "8/8/8/4k3/8/8/8/2B1KB2 w - - 0 1", "color": "w", "objetivo": "mate", "referencia": 20,
+      "ideas": ["Los dos alfiles, uno al lado del otro, forman una barrera diagonal que el rey no puede cruzar.", "Empuja al rey hacia una esquina con la ayuda de tu rey.", "Atención al ahogado en la esquina: deja siempre una casilla libre hasta el mate."]
+    },
+    {
+      "id": "mate-alfil-caballo", "nombre": "Mate con alfil y caballo", "grupo": "Mates básicos", "tipo": "Mates", "nivel": "Experto",
+      "fen": "8/8/8/4k3/8/8/8/1N2KB2 w - - 0 1", "color": "w", "objetivo": "mate", "referencia": 33,
+      "ideas": ["Solo se puede dar mate en una esquina del color de tu alfil.", "Primero lleva al rey al borde; luego, con la «maniobra en W» del caballo, a la esquina buena.", "Es el mate básico más difícil: tienes 50 jugadas, no te precipites. (La barra de Stockfish no «ve» este mate, pero está demostrado que siempre se gana.)"]
+    },
+    {
+      "id": "rey-delante", "nombre": "Rey delante del peón", "grupo": "Finales de peones", "tipo": "Peones", "nivel": "Básico",
+      "fen": "4k3/8/4K3/4P3/8/8/8/8 w - - 0 1", "color": "w", "objetivo": "coronar", "referencia": 12,
+      "ideas": ["Tu rey en la 6.ª fila delante de su peón gana SIEMPRE (si no es un peón de torre).", "Primero el rey abre camino; el peón avanza cuando la casilla de delante está controlada.", "No empujes el peón si deja al rival ahogado."]
+    },
+    {
+      "id": "oposicion", "nombre": "La oposición", "grupo": "Finales de peones", "tipo": "Peones", "nivel": "Importante",
+      "fen": "8/8/4k3/8/4K3/4P3/8/8 b - - 0 1", "color": "w", "objetivo": "coronar", "referencia": 15,
+      "ideas": ["Oposición: los reyes enfrentados con una casilla en medio; el que NO tiene que mover gana.", "Lleva tu rey por delante del peón; el peón va detrás.", "Si pierdes la oposición, un movimiento del peón puede devolverte el turno."]
+    },
+    {
+      "id": "cuadrado", "nombre": "La regla del cuadrado", "grupo": "Finales de peones", "tipo": "Peones", "nivel": "Básico",
+      "fen": "8/8/8/8/8/k7/6P1/5K2 b - - 0 1", "color": "w", "objetivo": "coronar", "referencia": 6,
+      "ideas": ["Imagina un cuadrado desde tu peón hasta la fila de coronación.", "Si el rey rival no puede entrar en ese cuadrado, el peón corona solo: ¡corre!", "No pierdas tiempo moviendo tu rey."]
+    },
+    {
+      "id": "defensa-rey-peon", "nombre": "Defender rey contra rey y peón", "grupo": "Finales de peones", "tipo": "Peones", "nivel": "Importante",
+      "fen": "8/8/8/4k3/8/8/4P3/4K3 w - - 0 1", "color": "b", "objetivo": "tablas", "referencia": null,
+      "ideas": ["Ponte delante del peón y busca la oposición.", "Si el peón llega a la 7.ª con tu rey delante, la clave es no salir de la casilla de coronación.", "Las tablas llegan cuando capturas el peón o cuando el rival te ahoga."]
+    },
+    {
+      "id": "peon-torre", "nombre": "Peón de torre: tablas", "grupo": "Finales de peones", "tipo": "Peones", "nivel": "Básico",
+      "fen": "k7/8/1K6/P7/8/8/8/8 w - - 0 1", "color": "b", "objetivo": "tablas", "referencia": null,
+      "ideas": ["Con el peón de torre, si tu rey llega a la esquina, son tablas.", "Quédate en a8/b8: el rey blanco no puede echarte sin ahogarte.", "Las tablas llegan por ahogado o porque el peón no puede avanzar."]
+    },
+    {
+      "id": "peon-pasado-lejano", "nombre": "El peón pasado lejano", "grupo": "Finales de peones", "tipo": "Peones", "nivel": "Importante",
+      "fen": "8/8/5k2/6p1/P7/6P1/5K2/8 w - - 0 1", "color": "w", "objetivo": "coronar", "referencia": 15,
+      "ideas": ["Tu peón de a está lejos de los reyes: el rey rival tendrá que ir a pararlo.", "Mientras tanto, tu rey se come los peones del otro flanco.", "Es la ventaja más importante en los finales de peones."]
+    },
+    {
+      "id": "ruptura", "nombre": "La ruptura de peones", "grupo": "Finales de peones", "tipo": "Peones", "nivel": "Avanzado",
+      "fen": "6k1/ppp5/8/PPP5/8/8/8/6K1 w - - 0 1", "color": "w", "objetivo": "coronar", "referencia": 5,
+      "ideas": ["Con tres peones contra tres, un sacrificio puede crear un peón pasado imparable.", "Pista: empieza con b6. Si …cxb6, a6; si …axb6, c6.", "Los reyes están lejos: cuenta las jugadas antes de lanzarte."]
+    },
+    {
+      "id": "lucena", "nombre": "Posición de Lucena (ganar)", "grupo": "Finales de torres", "tipo": "Torres", "nivel": "Avanzado",
+      "fen": "1K1k4/1P6/8/8/8/8/r7/2R5 w - - 0 1", "color": "w", "objetivo": "coronar", "referencia": 10,
+      "ideas": ["Es la posición ganadora más importante de los finales de torres.", "La clave es «construir el puente»: lleva tu torre a la 4.ª fila (Rc4) para tapar los jaques.", "Después saca tu rey y, cuando lleguen los jaques, interpón la torre."]
+    },
+    {
+      "id": "philidor", "nombre": "Posición de Philidor (defender)", "grupo": "Finales de torres", "tipo": "Torres", "nivel": "Avanzado",
+      "fen": "4k3/R7/1r6/3KP3/8/8/8/8 b - - 0 1", "color": "b", "objetivo": "aguantar", "jugadas": 20, "referencia": null,
+      "ideas": ["Tu torre en la 6.ª fila impide que el rey blanco avance.", "Cuando el peón avance a la 6.ª, lleva tu torre a la 1.ª fila y da jaques por detrás.", "No dejes que el rey blanco se acerque sin pagar con jaques."]
+    },
+    {
+      "id": "dama-vs-peon", "nombre": "Dama contra peón en 7.ª", "grupo": "Dama", "tipo": "Damas", "nivel": "Avanzado",
+      "fen": "6Q1/8/8/8/8/8/3pk3/K7 w - - 0 1", "color": "w", "objetivo": "ganar", "referencia": 15,
+      "ideas": ["Da jaques o clava para obligar al rey rival a ponerse delante de su peón.", "Cada vez que el rey tape el peón, acerca tu rey una casilla.", "Contra un peón central o de caballo, se gana; contra uno de alfil o de torre puede ser tablas."]
+    },
+    {
+      "id": "alfil-equivocado", "nombre": "Alfil equivocado: tablas", "grupo": "Piezas menores", "tipo": "Piezas menores", "nivel": "Importante",
+      "fen": "7k/8/5K2/7P/8/8/8/5B2 b - - 0 1", "color": "b", "objetivo": "aguantar", "jugadas": 20, "referencia": null,
+      "ideas": ["Peón de torre más alfil que no controla la casilla de coronación: el defensor hace tablas.", "Mantén tu rey en la esquina (h8, g8, h7).", "El rival solo puede ahogarte o repetir: son tablas."]
+    }
+  ],
+  "recomendacionesFinales": {
+    "Peones": ["oposicion", "peon-pasado-lejano", "ruptura", "cuadrado"],
+    "Torres": ["lucena", "philidor", "mate-torre"],
+    "Con damas": ["dama-vs-peon", "mate-dama"],
+    "Piezas menores": ["alfil-equivocado", "mate-dos-alfiles", "mate-alfil-caballo"],
+    "Torres y piezas menores": ["lucena", "philidor", "peon-pasado-lejano", "oposicion"]
+  }
+}
