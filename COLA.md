@@ -21,6 +21,12 @@ Todo lo que pide Elías se apunta aquí (fecha y estado) antes de hacerse.
    textos del Informe/Ejercicios/Entrenar). Informe en revision/simulacion-2.md. ⏳ Falta: enseñar a Elías y, si dice «publicar»,
    push a main y comprobar el despliegue. Fase 4 posible: «el porqué» de cada jugada (lo más pedido), ver lista en simulacion-2.md.
 
+6. ⏳ Pulido de diseño (pedido por Elías 24-11, tras publicar el modo claro): revisar el diseño pantalla por pantalla (390×844, 375×667,
+   1440×900), ajustar y publicar. SIN el porqué de cada jugada, SIN razones de aperturas y SIN frase de idea en ejercicios (quedan
+   en simulacion-2.md → Pendiente 1-3). Incluye: botón «Aa» más visible en móvil, iconos de pieza más grandes (el alfil parece
+   un cohete), leyenda de iconos visible en PC, chips más cortos dentro de frases, tablero fijo en pantallas bajas. Pedir «publicar»
+   antes del push.
+
 ## Pendiente / ideas
 - Probarlo en el iPhone real (Safari → Compartir → «Añadir a pantalla de inicio»). Ver PARA_TI.md si aparece algo.
 - Deslizar el dedo sobre el tablero para ir adelante/atrás en la revisión (cuidado: choca con mover piezas al reintentar).
