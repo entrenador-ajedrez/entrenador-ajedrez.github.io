@@ -178,7 +178,7 @@ export async function montar(vista, { estado }) {
       catch { break; }
     }
     linea.mensaje = `${mensaje ? mensaje + "<br>" : ""}En la partida jugaste ${chip(actual.fen, actual.tuJugada, "error")}.
-      Lo mejor era ${chip(actual.fen, r.mejorSan, "mejor")}. Recorre la línea de Stockfish con ▶:`;
+      Lo mejor era ${chip(actual.fen, r.mejorSan, "mejor")}. Pulsa ▶ para ver la línea de Stockfish en el tablero (x = captura, + = jaque, # = mate):`;
     linea.clase = clase;
     irLinea(0);
   }

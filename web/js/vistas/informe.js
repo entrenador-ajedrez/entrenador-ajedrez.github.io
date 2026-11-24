@@ -70,15 +70,15 @@ export async function montar(vista, { estado }) {
     const tA = analizados.length;
     const cands = [];
     let c = conError((m) => m.clase === "blunder" && m.tipo === "material");
-    cands.push({ ...c, titulo: "Dejas piezas sin defender (piezas colgadas y ataques dobles)",
+    cands.push({ ...c, titulo: "Dejas piezas sin defender (te las capturan gratis)",
       detalle: `En ${c.n} de ${tA} partidas analizadas perdiste material con una sola jugada.`,
       consejo: "Antes de soltar la pieza, haz el <b>chequeo de seguridad</b> (3 segundos): «después de mi jugada, ¿qué piezas mías están atacadas y cuántos defensores tienen?». Si hay más atacantes que defensores, o te ataca una pieza que vale menos, no la juegues. Haz 10 problemas al día de piezas colgadas y ataques dobles." });
     c = conError((m) => m.tipo === "mate_contra");
-    cands.push({ ...c, titulo: "No ves las amenazas de mate del rival",
+    cands.push({ ...c, titulo: "No ves que el rival te puede dar mate",
       detalle: `En ${c.n} partidas hiciste una jugada que permitía al rival darte mate.`,
       consejo: "Antes de tu jugada, mira primero <b>las jugadas forzantes del rival</b>: jaques, capturas y amenazas, en ese orden. Abre a tiempo una casilla de escape para tu rey (h3/h6 o g3/g6) para evitar el mate en la última fila." });
     c = conError((m) => m.clase === "blunder" && (m.tipo === "tactica" || m.tipo === "mate_perdido"));
-    cands.push({ ...c, titulo: "Fallos tácticos (no calculas la respuesta del rival)",
+    cands.push({ ...c, titulo: "Pierdes por no mirar qué hará el rival",
       detalle: `En ${c.n} partidas hubo un error grave que no fue perder material de golpe, sino entrar en una posición mucho peor o desaprovechar un golpe ganador.`,
       consejo: "Usa siempre la misma rutina antes de mover: <b>1)</b> ¿qué amenaza la última jugada del rival? <b>2)</b> ¿tengo algún jaque, captura o amenaza fuerte? <b>3)</b> después de mi jugada, ¿cuál es la mejor respuesta del rival? Practica con tus propios errores en <a href='#/ejercicios'>Ejercicios</a>." });
     const porTiempo = juegos.filter((j) => j.r.resultado === "derrota" && j.r.motivo === "timeout");

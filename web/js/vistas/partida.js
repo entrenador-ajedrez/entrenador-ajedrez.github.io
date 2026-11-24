@@ -12,6 +12,7 @@ import { aperturaEs, evalPalabras } from "../lenguaje.js";
 import { corta, negrita, usarTablero } from "../notacion.js";
 import { $, Chess, MOTIVOS, esc, fecha, formatoReloj, leerPartida, resumen } from "../util.js";
 
+const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 const FRASE = {
   brillante: "es brillante", genial: "es genial", mejor: "es la mejor", excelente: "es excelente",
   buena: "es buena", libro: "es de libro", imprecision: "es una imprecisión", error: "es un error",
@@ -146,7 +147,7 @@ export async function montar(vista, { parametro, parametros = [], estado }) {
       <div class="cabeza">${icono(m.clase, true)}<b>${corta(m.fenAntes, m.san)} ${FRASE[m.clase]}</b>
         <span class="ev">${textoEval(m.cp, m.mate)}</span></div>
       ${m.comentario.startsWith("<") ? m.comentario : `<p>${m.comentario}</p>`}
-      <div class="evalpal">${evalPalabras(m.cp, m.mate)} <small>(${textoEval(m.cp, m.mate)})</small></div>
+      <div class="evalpal">${cap(evalPalabras(m.cp, m.mate))} <small>(${textoEval(m.cp, m.mate)})</small></div>
       <div class="botones">
         ${m.mejorUci ? `<button id="btn-mejor">◆ Mejor</button>` : ""}
         ${puedeReintentar ? `<button id="btn-reintentar">↺ Reintentar</button>` : ""}

@@ -285,8 +285,8 @@ function comentar(m, antes, despues, colorUsuario) {
   let porque = "";
   if (respuesta) {
     const rc = chip(m.fen, respuesta.san, "jugada");
-    if (perdido >= 2 && respuesta.captured)
-      porque = `${Otro} responden ${rc} y capturan ${artPieza(respuesta.captured)}; en las jugadas siguientes se acaba perdiendo material.`;
+    if (respuesta.captured && perdido >= 2)
+      porque = `${Otro} responden ${rc} y capturan ${artPieza(respuesta.captured)}${perdido > VALOR[respuesta.captured] + 1 ? "; después se pierde aún más material" : ""}.`;
     else if (perdido >= 2) porque = `${Otro} responden ${rc} y, unas jugadas después, se acaba perdiendo material.`;
     else if (respuesta.captured) porque = `${Otro} responden ${rc} y capturan ${artPieza(respuesta.captured)}.`;
     else porque = `La mejor respuesta de ${otro} es ${rc} y su posición ${grave ? "mejora mucho" : "mejora"}.`;

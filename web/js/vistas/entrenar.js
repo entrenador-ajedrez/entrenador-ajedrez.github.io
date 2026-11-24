@@ -227,7 +227,7 @@ export async function montar(vista, { estado }) {
   async function empezar(datos) {
     if (datos.tipo === "catalogo") def = { ...porId.get(datos.id), progresoId: datos.progresoId };
     else if (datos.tipo === "tuya") def = { id: datos.progresoId, nombre: datos.nombre, color: datos.color, secuencia: datos.secuencia,
-      progresoId: datos.progresoId, tuya: true, ideas: ["Es tu línea habitual: Stockfish te avisará si alguna de tus jugadas de siempre no es la mejor."] };
+      progresoId: datos.progresoId, tuya: true, ideas: ["Es una línea que juegas a menudo: practícala hasta hacerla sin pensar.", "Stockfish te avisará si alguna de tus jugadas de siempre no es la mejor."] };
     else def = { id: datos.progresoId, nombre: datos.nombre, color: datos.color, fen: datos.fen, objetivo: "aguantar",
       jugadas: JUGADAS_TUS_FINALES, wpInicial: datos.wpInicial, progresoId: datos.progresoId,
       ideas: ["Es una posición real de tus partidas. Piensa en el plan: activa el rey, crea peones pasados, corta al rey rival."] };
@@ -285,7 +285,7 @@ export async function montar(vista, { estado }) {
       </div>
       ${ajustes}${pasosHtml()}
       <details open class="ideas"><summary>Ideas clave</summary><ul>${(def.ideas || []).map((t) => `<li>${esc(t)}</li>`).join("")}</ul></details>
-      <p class="linea-texto">${textoJugadas() || '<span class="suave">Aún no hay jugadas.</span>'}</p>`;
+      <p class="linea-texto">${textoJugadas() || '<span class="suave">Las jugadas que hagas aparecerán aquí.</span>'}</p>`;
     $("#volver").onclick = async (e) => { e.preventDefault(); progreso = await todoElProgreso(estado.usuario); pintarLista(); };
     $("#btn-reiniciar").onclick = () => empezar(def.secuencia && !def.tuya ? { tipo: "catalogo", id: def.id, progresoId: def.progresoId }
       : def.tuya ? { tipo: "tuya", secuencia: def.secuencia, color: def.color, nombre: def.nombre, progresoId: def.progresoId }

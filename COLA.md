@@ -17,8 +17,9 @@ Todo lo que pide Elías se apunta aquí (fecha y estado) antes de hacerse.
    (js/notacion.js), chips de jugada pulsables con flecha y casillas (también en Informe: abre la posición), comentario en
    3 pasos con evaluación en palabras, «error grave», aperturas en español (js/lenguaje.js), leyenda de iconos (js/leyenda.js),
    Entrenar con guía paso a paso / flecha de ayuda / Pista que resalta la pieza, tira de jugadas más grande en móvil.
-   Fase 3 (en curso): simulación 2 con 5 subagentes → revision/simulacion-2.md; arreglar lo principal; luego enseñar a Elías
-   y, si dice «publicar», push a main y comprobar el despliegue.
+   Fase 3 ✅ (24-11): simulación 2 → media 7,9 (antes 6,9); arreglos hechos (tablero fijo en móvil, «Qué pasa» sin contradicción,
+   textos del Informe/Ejercicios/Entrenar). Informe en revision/simulacion-2.md. ⏳ Falta: enseñar a Elías y, si dice «publicar»,
+   push a main y comprobar el despliegue. Fase 4 posible: «el porqué» de cada jugada (lo más pedido), ver lista en simulacion-2.md.
 
 ## Pendiente / ideas
 - Probarlo en el iPhone real (Safari → Compartir → «Añadir a pantalla de inicio»). Ver PARA_TI.md si aparece algo.

@@ -572,3 +572,15 @@ html[data-notacion="inglesa"] .n-ing { display: inline; }
 .pasos-linea li.ahora { outline: 1px solid var(--aviso); background: #3a3420; }
 .pasos-linea .quien { color: var(--suave); font-size: .78rem; text-transform: uppercase; margin-right: 6px; }
 .comentario .cabeza .ev { white-space: nowrap; }
+
+/* Ajustes tras la simulación 2 */
+@media (min-width: 1200px) {
+  .panel-derecho { max-width: 520px; }
+  .panel-derecho .cuerpo { font-size: 1.12rem; }
+  .lista-jugadas { font-size: 1.08rem; }
+}
+@media (max-width: 760px) and (min-height: 780px) {
+  /* el tablero se queda a la vista mientras lees el comentario */
+  .col-tablero { position: sticky; top: var(--alto-cab); z-index: 30; background: var(--fondo); padding-bottom: 4px; }
+  .tablero { width: min(calc(100vw - 43px), 36vh); min-width: 230px; }
+}
