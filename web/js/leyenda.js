@@ -2,7 +2,7 @@
 
 import { CLASES } from "./analizador.js";
 
-const SIGNIFICADO = {
+export const SIGNIFICADO = {
   brillante: "Un sacrificio que merece la pena: parece que pierdes material, pero la posición lo compensa.",
   genial: "La única jugada buena de la posición: cualquier otra empeoraba mucho.",
   mejor: "La jugada que Stockfish recomienda.",

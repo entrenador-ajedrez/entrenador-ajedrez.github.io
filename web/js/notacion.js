@@ -25,7 +25,8 @@ document.documentElement.dataset.notacion = modo();
 // ------------------------------------------------------------------ nombres
 const PIEZA = { p: "Peón", n: "Caballo", b: "Alfil", r: "Torre", q: "Dama", k: "Rey" };
 const PIEZA_LC = { p: "peón", n: "caballo", b: "alfil", r: "torre", q: "dama", k: "rey" };
-const DIBUJO = { p: "♙", n: "♘", b: "♗", r: "♖", q: "♕", k: "♔" };
+// Piezas macizas (se leen mejor en pequeño); ︎ evita que el móvil las pinte como emoji.
+const DIBUJO = { p: "♟︎", n: "♞︎", b: "♝︎", r: "♜︎", q: "♛︎", k: "♚︎" };
 const LETRA_ES = { K: "R", Q: "D", R: "T", B: "A", N: "C" };
 export const nombrePieza = (t) => PIEZA[t] || "";
 export const dibujoPieza = (t) => DIBUJO[t] || "";
@@ -56,11 +57,12 @@ function sencilla(m) {
 export function variantes(fenAntes, san) {
   const m = jugadaDe(fenAntes, san);
   const esp = espanola(san);
-  if (!m) return { sen: esc(san), esp: esc(esp), ing: esc(san), corto: esc(san), from: null, to: null };
+  if (!m) return { sen: esc(san), senChip: esc(san), esp: esc(esp), ing: esc(san), corto: esc(san), from: null, to: null };
   const enroque = m.flags.includes("k") || m.flags.includes("q");
-  const dib = enroque ? "♔" : DIBUJO[m.piece];
+  const dib = enroque ? DIBUJO.k : DIBUJO[m.piece];
   return {
     sen: `<span class="pz">${dib}</span>&nbsp;${esc(sencilla(m))} <small>· ${esc(esp)}</small>`,
+    senChip: `<span class="pz">${dib}</span>&nbsp;${esc(sencilla(m))}`,   // dentro de frases: sin repetir la notación
     esp: esc(esp),
     ing: esc(san),
     corto: `<span class="pz">${dib}</span>${esc(esp)}`,   // para la tira de jugadas
@@ -86,7 +88,7 @@ export function chip(fenAntes, san, tipo = "jugada", { href = "" } = {}) {
   const v = variantes(fenAntes, san);
   if (!v.from) return `<b>${esc(san)}</b>`;
   return `<span class="chip chip-${tipo}" role="button" tabindex="0" data-from="${v.from}" data-to="${v.to}" data-tipo="${tipo}"` +
-    `${href ? ` data-href="${esc(href)}"` : ""} title="Ver en el tablero">${tresSpans(v)}</span>`;
+    `${href ? ` data-href="${esc(href)}"` : ""} title="Ver en el tablero: ${esc(espanola(san))}">${tresSpans(v, "senChip")}</span>`;
 }
 
 /** Jugada compacta sin pulsar (tira de jugadas): dibujo + notación española en Sencilla. */
@@ -136,7 +138,7 @@ export function montarAjuste(caja) {
   const pinta = () => {
     const actual = modo();
     caja.innerHTML = `<button type="button" class="btn-notacion" aria-haspopup="true" aria-expanded="false"
-        title="Cómo se escriben las jugadas"><b>Aa</b><span class="solo-pc"> Notación: ${MODOS[actual]}</span></button>
+        title="Cómo se escriben las jugadas" aria-label="Notación: ${MODOS[actual]}. Cambiar cómo se escriben las jugadas"><b>Aa</b><span class="solo-pc"> Notación: ${MODOS[actual]}</span><span class="caret" aria-hidden="true">▾</span></button>
       <div class="menu-notacion" hidden role="menu">
         <div class="menu-titulo">Cómo escribir las jugadas</div>
         ${Object.entries(MODOS).map(([k, n]) => `<button type="button" role="menuitemradio" data-modo="${k}"

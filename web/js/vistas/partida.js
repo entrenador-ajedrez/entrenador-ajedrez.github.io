@@ -10,6 +10,7 @@ import { MATE, motor, probGanar } from "../motor.js";
 import { FLECHA, Tablero } from "../tablero.js";
 import { aperturaEs, evalPalabras } from "../lenguaje.js";
 import { corta, negrita, usarTablero } from "../notacion.js";
+import { SIGNIFICADO } from "../leyenda.js";
 import { $, Chess, MOTIVOS, esc, fecha, formatoReloj, leerPartida, resumen } from "../util.js";
 
 const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
@@ -105,7 +106,7 @@ export async function montar(vista, { parametro, parametros = [], estado }) {
 
   function htmlResumen() {
     const filas = Object.entries(CLASES).sort((a, b) => a[1].orden - b[1].orden).map(([c, d]) => `
-      <tr><td>${d.nombre}</td><td class="num">${revision.blancas.cuenta[c]}</td>
+      <tr><td>${d.nombre}<small class="solo-pc sig-icono">${SIGNIFICADO[c]}</small></td><td class="num">${revision.blancas.cuenta[c]}</td>
           <td>${icono(c)}</td><td class="num">${revision.negras.cuenta[c]}</td></tr>`).join("");
     const caja = (color) => {
       const p = (color === "w" ? revision.blancas : revision.negras).precision;
