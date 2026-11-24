@@ -2,6 +2,8 @@
 
 import { todosDeUsuario } from "../almacen.js";
 import { revisar } from "../analizador.js";
+import { aperturaEs } from "../lenguaje.js";
+import { chip } from "../notacion.js";
 import { $, MOTIVOS, RITMOS, esc, fecha, resumen } from "../util.js";
 
 const pct = (a, b) => (b ? (100 * a) / b : 0);
@@ -77,7 +79,7 @@ export async function montar(vista, { estado }) {
       consejo: "Antes de tu jugada, mira primero <b>las jugadas forzantes del rival</b>: jaques, capturas y amenazas, en ese orden. Abre a tiempo una casilla de escape para tu rey (h3/h6 o g3/g6) para evitar el mate en la última fila." });
     c = conError((m) => m.clase === "blunder" && (m.tipo === "tactica" || m.tipo === "mate_perdido"));
     cands.push({ ...c, titulo: "Fallos tácticos (no calculas la respuesta del rival)",
-      detalle: `En ${c.n} partidas hubo un blunder que no fue perder material de golpe, sino entrar en una posición mucho peor o desaprovechar un golpe ganador.`,
+      detalle: `En ${c.n} partidas hubo un error grave que no fue perder material de golpe, sino entrar en una posición mucho peor o desaprovechar un golpe ganador.`,
       consejo: "Usa siempre la misma rutina antes de mover: <b>1)</b> ¿qué amenaza la última jugada del rival? <b>2)</b> ¿tengo algún jaque, captura o amenaza fuerte? <b>3)</b> después de mi jugada, ¿cuál es la mejor respuesta del rival? Practica con tus propios errores en <a href='#/ejercicios'>Ejercicios</a>." });
     const porTiempo = juegos.filter((j) => j.r.resultado === "derrota" && j.r.motivo === "timeout");
     c = conError((m) => m.apuros && graves.has(m.clase));
@@ -97,7 +99,7 @@ export async function montar(vista, { estado }) {
       consejo: "No hace falta memorizar mucho. Elige <b>una</b> apertura con blancas y una defensa contra 1.e4 y otra contra 1.d4, y entrénalas en <a href='#/entrenar'>Entrenar</a>. Principios: saca caballos y alfiles, enroca pronto, no saques la dama al principio ni muevas la misma pieza dos veces." });
     c = conError((m) => m.fase === "final" && m.clase === "blunder");
     cands.push({ ...c, titulo: "Errores en el final",
-      detalle: `En ${c.n} partidas cometiste un blunder con pocas piezas sobre el tablero.`,
+      detalle: `En ${c.n} partidas cometiste un error grave con pocas piezas sobre el tablero.`,
       consejo: "Aprende los finales básicos (rey y peón, la oposición, mate con torre y con dama) en <a href='#/entrenar'>Entrenar → Finales</a>. Y en cuanto se cambien las damas, <b>activa tu rey</b> y llévalo al centro." });
     const abandonos = juegos.filter((j) => j.r.resultado === "derrota" && j.r.motivo === "abandoned");
     cands.push({ n: abandonos.length, ejemplos: [], titulo: "Abandonas partidas (desconexión)",
@@ -111,7 +113,7 @@ export async function montar(vista, { estado }) {
         <div><h3>${t.titulo}</h3><p class="suave">${t.detalle}</p><p><b>Consejo:</b> ${t.consejo}</p>
         ${t.ejemplos.length ? `<details><summary>Ejemplos de tus partidas</summary><ul>${t.ejemplos.map(({ j, m }) =>
           `<li><a href="#/partida/${j.p.id}">vs ${esc(j.r.rival.username)}, ${fecha(j.p.end_time)}</a> — jugada ${Math.ceil(m.indice / 2)}${m.color === "w" ? "." : "…"}
-           <b>${esc(m.san)}</b>${m.mejorSan ? `; lo mejor era <b>${esc(m.mejorSan)}</b>` : ""}</li>`).join("")}</ul></details>` : ""}
+           ${chip(m.fenAntes, m.san, "error", { href: `#/partida/${j.p.id}/${m.indice}` })}${m.mejorSan ? `; lo mejor era ${chip(m.fenAntes, m.mejorSan, "mejor", { href: `#/partida/${j.p.id}/${m.indice}` })}` : ""}</li>`).join("")}</ul></details>` : ""}
         </div></article>`).join("");
 
     // ---- Evolución de la precisión
@@ -154,9 +156,9 @@ export async function montar(vista, { estado }) {
       const conDatos = filas.filter((x) => x.n >= 3);
       const mejor = conDatos.length >= 2 ? conDatos.reduce((a, b) => (pct(b.v, b.n) > pct(a.v, a.n) ? b : a)) : null;
       const peor = conDatos.length >= 2 ? conDatos.reduce((a, b) => (pct(b.v, b.n) < pct(a.v, a.n) ? b : a)) : null;
-      return (mejor ? `<p class="suave">Mejor: <b>${esc(mejor.f)}</b> (${pct(mejor.v, mejor.n).toFixed(0)}% en ${mejor.n}). Peor: <b>${esc(peor.f)}</b> (${pct(peor.v, peor.n).toFixed(0)}% en ${peor.n}).</p>` : "") +
+      return (mejor ? `<p class="suave">Mejor: <b>${esc(aperturaEs(mejor.f))}</b> (${pct(mejor.v, mejor.n).toFixed(0)}% en ${mejor.n}). Peor: <b>${esc(aperturaEs(peor.f))}</b> (${pct(peor.v, peor.n).toFixed(0)}% en ${peor.n}).</p>` : "") +
         `<table class="tabla-informe"><thead><tr><th>Apertura</th><th>Partidas</th><th>G</th><th>T</th><th>P</th><th>% victorias</th><th></th></tr></thead><tbody>
-        ${filas.map((x) => `<tr><td>${esc(x.f)}</td><td>${x.n}</td><td>${x.v}</td><td>${x.t}</td><td>${x.d}</td><td>${pct(x.v, x.n).toFixed(0)}%</td><td>${barra(x.v, x.n, "bien")}</td></tr>`).join("")}</tbody></table>`;
+        ${filas.map((x) => `<tr><td>${esc(aperturaEs(x.f))}</td><td>${x.n}</td><td>${x.v}</td><td>${x.t}</td><td>${x.d}</td><td>${pct(x.v, x.n).toFixed(0)}%</td><td>${barra(x.v, x.n, "bien")}</td></tr>`).join("")}</tbody></table>`;
     };
 
     const aviso = nAnalizadas < nTotal
@@ -168,24 +170,24 @@ export async function montar(vista, { estado }) {
         <div class="kpi"><b>${juegos.length}</b><span>partidas (${fecha(juegos[0].p.end_time)} – ${fecha(juegos[juegos.length - 1].p.end_time)})</span></div>
         <div class="kpi"><b>${pct(res.victoria, juegos.length).toFixed(0)}%</b><span>${res.victoria} G · ${res.tablas} T · ${res.derrota} P</span></div>
         <div class="kpi"><b>${precisionMedia != null ? precisionMedia.toFixed(1) + "%" : "—"}</b><span>precisión media</span></div>
-        <div class="kpi"><b>${tA ? (blunders.length / tA).toFixed(1) : "—"}</b><span>blunders por partida</span></div>
-        <div class="kpi"><b>${tA ? NOMBRE_FASE[peorFase] : "—"}</b><span>fase con más blunders por jugada</span></div>
+        <div class="kpi"><b>${tA ? (blunders.length / tA).toFixed(1) : "—"}</b><span>errores graves por partida</span></div>
+        <div class="kpi"><b>${tA ? NOMBRE_FASE[peorFase] : "—"}</b><span>fase con más errores graves por jugada</span></div>
       </div>
       <h2>Tus 3 errores más repetidos</h2>
       ${tarjetas || `<p class="suave">${tA ? "No se detectan errores repetidos. ¡Bien jugado!" : "Analiza tus partidas para verlos."}</p>`}
       ${evolucion}
       <div class="dos-columnas">
-        <section><h2>¿En qué fase fallas?</h2><table class="tabla-informe"><thead><tr><th>Fase</th><th>Blunders</th><th>Tus jugadas</th><th>Cada 100</th><th></th></tr></thead><tbody>
+        <section><h2>¿En qué fase fallas?</h2><table class="tabla-informe"><thead><tr><th>Fase</th><th>Errores graves</th><th>Tus jugadas</th><th>Cada 100</th><th></th></tr></thead><tbody>
           ${FASES.map((f) => `<tr><td>${NOMBRE_FASE[f]}</td><td>${blFase[f]}</td><td>${jugFase[f]}</td><td>${tasa[f].toFixed(1)}</td><td>${barra(tasa[f], Math.max(...Object.values(tasa), 0.01), "mal")}</td></tr>`).join("")}
         </tbody></table></section>
-        <section><h2>¿Fallas más en partidas rápidas?</h2><table class="tabla-informe"><thead><tr><th>Ritmo</th><th>Partidas</th><th>% victorias</th><th>Blunders/partida</th><th>Derrotas por tiempo</th></tr></thead><tbody>${filasRitmo}</tbody></table></section>
+        <section><h2>¿Fallas más en partidas rápidas?</h2><table class="tabla-informe"><thead><tr><th>Ritmo</th><th>Partidas</th><th>% victorias</th><th>Err. graves/partida</th><th>Derrotas por tiempo</th></tr></thead><tbody>${filasRitmo}</tbody></table></section>
         <section><h2>¿Cómo pierdes?</h2><table class="tabla-informe"><tbody>${filasMotivo || "<tr><td>Sin derrotas</td></tr>"}</tbody></table></section>
-        <section><h2>¿Qué tipo de blunders cometes?</h2><table class="tabla-informe"><tbody>${filasTipo || "<tr><td class='suave'>Sin datos</td></tr>"}</tbody></table>
-          <p class="suave pequeno">${blunders.filter((b) => b.apuros).length} de tus ${blunders.length} blunders fueron con menos del 10% del tiempo.</p></section>
+        <section><h2>¿Qué tipo de errores graves cometes?</h2><table class="tabla-informe"><tbody>${filasTipo || "<tr><td class='suave'>Sin datos</td></tr>"}</tbody></table>
+          <p class="suave pequeno">${blunders.filter((b) => b.apuros).length} de tus ${blunders.length} errores graves fueron con menos del 10% del tiempo.</p></section>
         <section><h2>Aperturas con blancas</h2>${aperturas("w")}</section>
         <section><h2>Aperturas con negras</h2>${aperturas("b")}</section>
       </div>
-      <p class="suave pequeno">Blunder: jugada que quita 15 puntos o más de probabilidad de ganar; error: 10 o más. Precisión: método público de lichess. Apertura = hasta la jugada 12; final = pocas piezas sin contar peones.</p>`;
+      <p class="suave pequeno">Error grave: jugada que quita 15 puntos o más de probabilidad de ganar; error: 10 o más. Precisión: método público de lichess. Apertura = hasta la jugada 12; final = pocas piezas sin contar peones.</p>`;
 
   }
 

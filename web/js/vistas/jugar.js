@@ -1,12 +1,13 @@
 // Jugar contra Stockfish, desde el inicio o desde cualquier posición:
 //   #/jugar                    -> partida normal
 //   #/jugar/<fen>/<color w|b>  -> desde esa posición (viene de Ejercicios o de una partida)
-// Modo entrenador: si haces un blunder, te avisa y te deja deshacerlo.
+// Modo entrenador: si cometes un error grave, te avisa y te deja deshacerlo.
 
 import { corregirJugada, textoEval } from "../analizador.js";
 import { NIVELES } from "../datos-entrenamiento.js";
 import { motor, probGanar } from "../motor.js";
 import { Tablero, disposicion, fichaJugador, ponerBarra } from "../tablero.js";
+import { chip, corta, usarTablero } from "../notacion.js";
 import { $, Chess, esc } from "../util.js";
 
 const INICIO = new Chess().fen();
@@ -29,6 +30,7 @@ export async function montar(vista, { parametros, estado }) {
     puedeMover: () => !pensando && !enPausa && !juego.isGameOver() && juego.turn() === miColor,
     alMover: (m) => tuJugada(m),
   });
+  usarTablero(tablero);
 
   // ---------------------------------------------------------------- panel
   function pintar() {
@@ -52,7 +54,7 @@ export async function montar(vista, { parametros, estado }) {
           <option value="b" ${miColor === "b" ? "selected" : ""}>Con negras</option></select>
         <button class="principal" id="btn-nueva">Nueva partida</button>
       </div>
-      <label class="opcion"><input type="checkbox" id="avisar" ${avisar ? "checked" : ""}> Modo entrenador: avísame si hago un blunder</label>
+      <label class="opcion"><input type="checkbox" id="avisar" ${avisar ? "checked" : ""}> Modo entrenador: avísame si cometo un error grave</label>
       <label class="opcion"><input type="checkbox" id="ver-barra" ${verBarra ? "checked" : ""}> Mostrar la barra de evaluación</label>
       <div class="comentario ${claseMsg}" style="margin-top:12px">
         <div class="cabeza"><b>${estadoTxt}</b></div>
@@ -82,10 +84,10 @@ export async function montar(vista, { parametros, estado }) {
   function textoJugadas() {
     const partes = fenInicial.split(" ");
     let n = Number(partes[5]), blancas = partes[1] === "w", texto = "";
-    juego.history().forEach((san, i) => {
+    juego.history({ verbose: true }).forEach((mv, i) => {
       if (blancas) texto += `${n}. `;
       else if (i === 0) texto += `${n}… `;
-      texto += esc(san) + " ";
+      texto += corta(mv.before, mv.san) + " ";
       if (!blancas) n += 1;
       blancas = !blancas;
     });
@@ -140,7 +142,7 @@ export async function montar(vista, { parametros, estado }) {
       if (!activa) return;
       if (r.perdida >= UMBRAL_AVISO) {
         enPausa = true;
-        mensaje = `⚠ <b>${esc(m.san)}</b> parece un <b>blunder</b>: pierdes ${r.perdida.toFixed(0)} puntos de probabilidad de ganar
+        mensaje = `⚠ ${chip(fenAntes, m.san, "error")} parece un <b>error grave</b>: pierdes ${r.perdida.toFixed(0)} puntos de probabilidad de ganar
           (evaluación ${textoEval(r.cpDespues, r.mateDespues)}). Mira qué puede hacer Stockfish ahora.`;
         claseMsg = "mal";
         pintar();

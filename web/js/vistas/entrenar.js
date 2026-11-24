@@ -11,7 +11,9 @@
 import { apuntarProgreso, todoElProgreso, todosDeUsuario } from "../almacen.js";
 import { corregirJugada, revisar } from "../analizador.js";
 import { motor, probGanar } from "../motor.js";
-import { Tablero, disposicion, fichaJugador } from "../tablero.js";
+import { FLECHA, Tablero, disposicion, fichaJugador } from "../tablero.js";
+import { aperturaEs } from "../lenguaje.js";
+import { chip, corta, instruccion, usarTablero } from "../notacion.js";
 import { $, Chess, esc, fecha, leerPartida, resumen } from "../util.js";
 
 const JUGADAS_APERTURA = 10;  // jugadas de cada bando que dura un entrenamiento de apertura
@@ -24,6 +26,7 @@ const OBJETIVOS = {
   aguantar: "Objetivo: que tu posición no empeore.",
 };
 const COLOR = { w: "blancas", b: "negras" };
+const NOMBRE_PZ = { p: "peón", n: "caballo", b: "alfil", r: "torre", q: "dama", k: "rey" };
 let catalogo = null; // se carga una vez
 
 export async function montar(vista, { estado }) {
@@ -43,6 +46,7 @@ export async function montar(vista, { estado }) {
   let pensando = false, enPausa = false, terminado = false;
   let cuenta = { buenas: 0, imprecisiones: 0, errores: 0 };
   let mensaje = "", claseMsg = "", nota = "";
+  let guiar = true, ayudaFlecha = false;   // guía paso a paso y flecha de ayuda (solo aperturas)
   let activa = true;
   let progreso = await todoElProgreso(estado.usuario);
 
@@ -57,13 +61,30 @@ export async function montar(vista, { estado }) {
     puedeMover: () => !!def && !pensando && !enPausa && !terminado && juego.turn() === miColor,
     alMover: (m) => tuJugada(m),
   });
+  usarTablero(tablero);
 
   const esApertura = () => !!def?.secuencia;
   const enLinea = () => esApertura() && paso < def.secuencia.length;
-  const lineaTexto = (s, desde = 0) => s.map((x, i) => {
-    const n = desde + i;
-    return n % 2 === 0 ? `${n / 2 + 1}.${x}` : (i === 0 ? `${Math.ceil(n / 2)}…${x}` : x);
-  }).join(" ");
+
+  // Línea como texto corto con los tres formatos (para las listas).
+  const lineaNota = (s) => {
+    const g = new Chess();
+    return s.map((x, i) => { const f = g.fen(); try { g.move(x); } catch { /* línea rota */ } return (i % 2 === 0 ? `${i / 2 + 1}.` : "") + corta(f, x); }).join(" ");
+  };
+
+  // La línea de apertura como pasos (no como cadena): hechos, el de ahora y los que faltan.
+  function pasosHtml() {
+    if (!esApertura()) return "";
+    const g = new Chess();
+    const items = def.secuencia.map((san, i) => {
+      const f = g.fen();
+      try { g.move(san); } catch { /* línea rota */ }
+      const mio = (i % 2 === 0) === (miColor === "w");
+      const est = i < paso ? "hecho" : i === paso ? "ahora" : "";
+      return `<li class="${est} ${mio ? "mio" : "rival"}"><span class="quien">${mio ? "Tú" : "Rival"}</span> ${chip(f, san, mio ? "mejor" : "jugada")}</li>`;
+    });
+    return `<details open class="pasos-linea"><summary>La línea, paso a paso</summary><ol>${items.join("")}</ol></details>`;
+  }
 
   // ---------------------------------------------------------------- listas
   function pintarLista() {
@@ -105,7 +126,7 @@ export async function montar(vista, { estado }) {
   }
 
   const botonApertura = (a, extra = "") => boton({ tipo: "catalogo", id: a.id, progresoId: `apertura-${a.id}` }, esc(a.nombre),
-    `Con ${COLOR[a.color]} · ${esc(lineaTexto(a.secuencia))} · ${a.nivel}`, extra);
+    `Con ${COLOR[a.color]} · ${lineaNota(a.secuencia)} · ${a.nivel}`, extra);
   const botonFinal = (f) => boton({ tipo: "catalogo", id: f.id, progresoId: `final-${f.id}` }, esc(f.nombre),
     `${f.nivel} · ${OBJETIVOS[f.objetivo]}${f.jugadas ? ` (${f.jugadas} jugadas)` : ""}`);
 
@@ -116,7 +137,7 @@ export async function montar(vista, { estado }) {
       if (!ls.length) return "";
       return `<h3 class="grupo">Con ${COLOR[color]}</h3><div class="lista-entrenos">${ls.map((l) =>
         boton({ tipo: "tuya", secuencia: l.secuencia, color, nombre: l.nombre, progresoId: `tuya-${l.secuencia.join("_")}` },
-          esc(l.nombre), `${esc(lineaTexto(l.secuencia))} · en ${l.n} partidas · ${Math.round((100 * l.v) / l.n)}% de victorias`,
+          esc(l.nombre), `${lineaNota(l.secuencia)} · en ${l.n} partidas · ${Math.round((100 * l.v) / l.n)}% de victorias`,
           l.v / l.n < 0.4 && l.n >= 3 ? ` <span class="etiqueta mal">te cuesta</span>` : "")).join("")}</div>`;
     };
     return `<p class="suave pequeno">Las líneas que más repites en tus partidas. Al entrenarlas, Stockfish te avisa si tu jugada habitual no es la mejor.</p>
@@ -139,7 +160,7 @@ export async function montar(vista, { estado }) {
       if (!entradas.length) continue;
       entradas.forEach((a) => vistas.add(a.id));
       const pct = Math.round((100 * f.v) / f.n);
-      variantes += `<h3 class="grupo">${esc(f.familia)} con ${COLOR[f.color]}
+      variantes += `<h3 class="grupo">${esc(aperturaEs(f.familia))} con ${COLOR[f.color]}
         <span class="suave">(${f.n} partidas, ${pct}% victorias)${pct < 40 ? ` <span class="etiqueta mal">te cuesta</span>` : ""}</span></h3>
         <div class="lista-entrenos">${entradas.map((a) => botonApertura(a)).join("")}</div>`;
       for (const a of entradas) relacionadas.push(...a.relacionadas);
@@ -236,19 +257,24 @@ export async function montar(vista, { estado }) {
 
   function pintarSesion() {
     let objetivo = `Juegas con ${COLOR[miColor]}. `;
-    if (esApertura()) objetivo += `Línea: ${esc(lineaTexto(def.secuencia))}`;
+    if (esApertura()) objetivo += "Aprende esta línea jugándola.";
     else {
       objetivo += OBJETIVOS[def.objetivo];
       if (def.objetivo === "aguantar") objetivo += ` Juega ${def.jugadas} jugadas (llevas ${misJugadas()}).`;
       if (def.referencia) objetivo += ` Un buen jugador lo consigue en unas ${def.referencia} jugadas.`;
     }
     const estadoTxt = terminado ? "" : pensando ? "Pensando…" : juego.turn() === miColor ? "Te toca." : "";
+    const toca = esApertura() && enLinea() && juego.turn() === miColor && !pensando && !terminado && !enPausa;
+    const guia = toca && guiar ? `<p class="guia"><span class="et">Tu turno</span><b>${instruccion(juego.fen(), def.secuencia[paso])}.</b></p>` : "";
+    const ajustes = esApertura() ? `<div class="ajustes-guia">
+        <label class="opcion"><input type="checkbox" id="chk-guiar" ${guiar ? "checked" : ""}> Decirme qué mover</label>
+        <label class="opcion"><input type="checkbox" id="chk-flecha" ${ayudaFlecha ? "checked" : ""}> Flecha de ayuda</label></div>` : "";
     $("#cuerpo").innerHTML = `
       <p><a href="#" id="volver">← Elegir otro</a></p>
       <div class="comentario ${claseMsg}">
         <div class="cabeza"><b>${esc(def.nombre)}</b><span class="ev">${estadoTxt}</span></div>
         <p class="suave pequeno">${objetivo}</p>
-        ${mensaje ? `<p>${mensaje}</p>` : ""}
+        ${mensaje ? `<p>${mensaje}</p>` : ""}${guia}
         ${nota ? `<p class="nota-linea">${nota}</p>` : ""}
         ${enPausa ? `<div class="botones"><button class="principal" id="btn-deshacer-aviso">Deshacer y probar otra</button>
           <button id="btn-seguir">Seguir igualmente</button></div>` : ""}
@@ -257,8 +283,9 @@ export async function montar(vista, { estado }) {
           <button id="btn-pista">💡 Pista</button>
         </div>
       </div>
+      ${ajustes}${pasosHtml()}
       <details open class="ideas"><summary>Ideas clave</summary><ul>${(def.ideas || []).map((t) => `<li>${esc(t)}</li>`).join("")}</ul></details>
-      <p class="linea-texto">${esc(textoJugadas()) || '<span class="suave">Aún no hay jugadas.</span>'}</p>`;
+      <p class="linea-texto">${textoJugadas() || '<span class="suave">Aún no hay jugadas.</span>'}</p>`;
     $("#volver").onclick = async (e) => { e.preventDefault(); progreso = await todoElProgreso(estado.usuario); pintarLista(); };
     $("#btn-reiniciar").onclick = () => empezar(def.secuencia && !def.tuya ? { tipo: "catalogo", id: def.id, progresoId: def.progresoId }
       : def.tuya ? { tipo: "tuya", secuencia: def.secuencia, color: def.color, nombre: def.nombre, progresoId: def.progresoId }
@@ -266,6 +293,13 @@ export async function montar(vista, { estado }) {
       : { tipo: "tuyo", fen: def.fen, color: def.color, wpInicial: def.wpInicial, nombre: def.nombre, progresoId: def.progresoId });
     $("#btn-deshacer").onclick = deshacer;
     $("#btn-pista").onclick = pista;
+    if ($("#chk-guiar")) $("#chk-guiar").onchange = (e) => { guiar = e.target.checked; pintarSesion(); };
+    if ($("#chk-flecha")) $("#chk-flecha").onchange = (e) => { ayudaFlecha = e.target.checked; pintarSesion(); };
+    tablero.quitarFlechas();
+    if (toca && ayudaFlecha) {
+      const mv = (() => { try { return new Chess(juego.fen()).move(def.secuencia[paso]); } catch { return null; } })();
+      if (mv) tablero.flecha(mv.lan, FLECHA.mejor);
+    }
     if (enPausa) {
       $("#btn-deshacer-aviso").onclick = deshacer;
       $("#btn-seguir").onclick = () => { enPausa = false; mensaje = ""; claseMsg = ""; siguienteTurno(); };
@@ -279,7 +313,7 @@ export async function montar(vista, { estado }) {
       const [, color, , , , num] = g.fen().split(" ");
       if (color === "w") texto += `${num}. `;
       else if (!texto) texto += `${num}… `;
-      texto += san + " ";
+      texto += corta(g.fen(), san) + " ";
       g.move(san);
     }
     return texto;
@@ -333,8 +367,8 @@ export async function montar(vista, { estado }) {
       if (m.san !== esperada) {
         juego.undo();
         tablero.posicion(fenAntes, false);
-        mensaje = def.tuya ? `En tus partidas aquí sueles jugar <b>${esc(esperada)}</b>. ¡Prueba esa!`
-          : `En la ${esc(def.nombre)} aquí se juega <b>${esc(esperada)}</b>. ¡Prueba otra vez!`;
+        mensaje = def.tuya ? `En tus partidas aquí sueles jugar ${chip(fenAntes, esperada, "mejor")}. ¡Prueba esa!`
+          : `En la ${esc(def.nombre)} aquí se juega ${chip(fenAntes, esperada, "mejor")}. ¡Prueba otra vez!`;
         claseMsg = "c-imprecision";
         return pintarSesion();
       }
@@ -359,19 +393,19 @@ export async function montar(vista, { estado }) {
     if (r.perdida >= limite) {
       cuenta.errores += 1;
       enPausa = true;
-      mensaje = `✘ <b>${esc(m.san)}</b> es un error: pierdes ${r.perdida.toFixed(0)} puntos de probabilidad de ganar.
-        Lo mejor era <b class="txt-bien">${esc(r.mejorSan)}</b>. ¿Deshaces y pruebas otra?`;
+      mensaje = `✘ ${chip(fenAntes, m.san, "error")} es un error: pierdes ${r.perdida.toFixed(0)} puntos de probabilidad de ganar.
+        Lo mejor era ${chip(fenAntes, r.mejorSan, "mejor")}. ¿Deshaces y pruebas otra?`;
       claseMsg = "mal";
       return pintarSesion();
     }
     if (esApertura()) {
       if (r.perdida >= 5) {
         cuenta.imprecisiones += 1;
-        mensaje = `<b>${esc(m.san)}</b> es una imprecisión (−${r.perdida.toFixed(0)}). Mejor era <b>${esc(r.mejorSan)}</b>.`;
+        mensaje = `${chip(fenAntes, m.san, "jugada")} es una imprecisión (−${r.perdida.toFixed(0)}). Mejor era ${chip(fenAntes, r.mejorSan, "mejor")}.`;
         claseMsg = "c-imprecision";
       } else {
         cuenta.buenas += 1;
-        mensaje = r.esLaMejor ? `✔ <b>${esc(m.san)}</b>: ¡la mejor jugada!` : `✔ <b>${esc(m.san)}</b>: buena jugada.`;
+        mensaje = r.esLaMejor ? `✔ ${chip(fenAntes, m.san, "mejor")}: ¡la mejor jugada!` : `✔ ${chip(fenAntes, m.san, "jugada")}: buena jugada.`;
         claseMsg = "ok";
       }
     } else { mensaje = ""; claseMsg = ""; }
@@ -382,7 +416,7 @@ export async function montar(vista, { estado }) {
     const r = await corregirJugada(fenAntes, m.lan, { profundidad: 14 });
     if (!activa || !def?.tuya) return;
     if (r.perdida >= 5) {
-      nota = `⚠ Ojo: <b>${esc(m.san)}</b> es tu jugada habitual aquí, pero Stockfish prefiere <b>${esc(r.mejorSan)}</b>
+      nota = `⚠ Ojo: ${chip(fenAntes, m.san, "error")} es tu jugada habitual aquí, pero Stockfish prefiere ${chip(fenAntes, r.mejorSan, "mejor")}
         (pierdes ${r.perdida.toFixed(0)} puntos de probabilidad de ganar). Quizá te convenga cambiarla.`;
       pintarSesion();
     }
@@ -468,11 +502,17 @@ export async function montar(vista, { estado }) {
 
   async function pista() {
     if (pensando || enPausa || terminado || juego.turn() !== miColor) return;
-    if (enLinea()) { mensaje = `En esta línea se juega <b>${esc(def.secuencia[paso])}</b>.`; claseMsg = "c-imprecision"; return pintarSesion(); }
+    if (enLinea()) {
+      const mv = (() => { try { return new Chess(juego.fen()).move(def.secuencia[paso]); } catch { return null; } })();
+      if (mv) tablero.ultimaJugada(mv.from + mv.from);   // resalta la pieza que hay que mover
+      mensaje = `💡 ${mv ? instruccion(juego.fen(), def.secuencia[paso]) : "Sigue la línea"}.`; claseMsg = "c-imprecision";
+      return pintarSesion();
+    }
     const [l] = await motor().analizar(juego.fen(), { profundidad: 14 });
     if (!activa) return;
     tablero.ultimaJugada(l.pv[0].slice(0, 2) + l.pv[0].slice(0, 2));
-    mensaje = "💡 Pista: mueve la pieza resaltada."; claseMsg = "c-imprecision";
+    const pz = juego.get(l.pv[0].slice(0, 2));
+    mensaje = `💡 Pista: mueve ${pz ? `el ${NOMBRE_PZ[pz.type]} de ${l.pv[0].slice(0, 2)}` : "la pieza resaltada"}.`; claseMsg = "c-imprecision";
     pintarSesion();
   }
 
@@ -515,7 +555,7 @@ function calcularLineas(resumenes) {
     }
   }
   return [...lineas.values()]
-    .map((l) => ({ ...l, nombre: Object.entries(l.nombres).sort((a, b) => b[1] - a[1])[0]?.[0] || "Tu línea" }))
+    .map((l) => ({ ...l, nombre: aperturaEs(Object.entries(l.nombres).sort((a, b) => b[1] - a[1])[0]?.[0]) || "Tu línea" }))
     .sort((a, b) => b.n - a.n || b.secuencia.length - a.secuencia.length)
     .filter((l, i, todas) => todas.findIndex((o) => o.color === l.color && o.secuencia.join(" ") === l.secuencia.join(" ")) === i)
     .slice(0, 12);

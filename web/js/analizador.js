@@ -8,6 +8,7 @@
 import { guardar, obtener } from "./almacen.js";
 import { MATE, motor, probGanar } from "./motor.js";
 import { Chess, fase, leerPartida, resumen, tiempoBase } from "./util.js";
+import { chip } from "./notacion.js";
 
 export const PROFUNDIDAD = 14;
 const VERSION = 1; // súbelo si cambia lo que se guarda: obliga a re-analizar
@@ -24,7 +25,7 @@ export const CLASES = {
   imprecision: { nombre: "Imprecisión",        simbolo: "?!", orden: 6 },
   error:       { nombre: "Error",              simbolo: "?",  orden: 7 },
   oportunidad: { nombre: "Oportunidad perdida", simbolo: "↯", orden: 8 },
-  blunder:     { nombre: "Blunder",            simbolo: "??", orden: 9 },
+  blunder:     { nombre: "Error grave",        simbolo: "??", orden: 9 },
 };
 export const MALAS = new Set(["imprecision", "error", "oportunidad", "blunder"]);
 
@@ -199,7 +200,7 @@ export function revisar(partida, analisis) {
   });
 
   revisadas.forEach((m, i) => {
-    const { texto, tipo } = comentar(m, ev[i], ev[i + 1]);
+    const { texto, tipo } = comentar(m, ev[i], ev[i + 1], r.color);
     m.comentario = texto;
     m.tipo = tipo; // material | mate_contra | mate_perdido | tactica (solo en jugadas malas)
   });
@@ -243,47 +244,59 @@ export function textoEval(cp, mate) {
 }
 
 // Devuelve { texto, tipo }. tipo (solo en jugadas malas): material | mate_contra | mate_perdido | tactica
-function comentar(m, antes, despues) {
+// Las jugadas malas se explican en tres pasos (qué se jugó → qué responde el rival → qué era mejor) con
+// jugadas pulsables (chips). Solo se escribe lo que el análisis respalda.
+function comentar(m, antes, despues, colorUsuario) {
   const yo = m.color;
   const rivalMate = despues.mate != null && (yo === "w" ? despues.mate < 0 : despues.mate > 0) && despues.mate !== 0;
   const teniaMate = antes.mate != null && (yo === "w" ? antes.mate > 0 : antes.mate < 0);
-  const mejor = m.mejorSan ? `Lo mejor era <b>${m.mejorSan}</b>.` : "";
+  const mejor = m.mejorSan ? ` Lo mejor era ${chip(m.fenAntes, m.mejorSan, "mejor")}.` : "";
   const buena = (texto) => ({ texto, tipo: null });
 
   switch (m.clase) {
-    case "brillante": return buena(`¡Sacrificio brillante! Entregas material pero la posición lo compensa.`);
+    case "brillante": return buena(`¡Sacrificio brillante! Entregas material, pero la posición lo compensa.`);
     case "genial": return buena(`¡La única jugada buena! Cualquier otra empeoraba mucho la posición.`);
     case "mejor": return buena(teniaMate ? `Es la mejor: lleva al mate.` : `Es la mejor jugada.`);
     case "excelente": return buena(`Excelente jugada, casi tan buena como la mejor.`);
-    case "buena": return buena(`Buena jugada. ${mejor}`);
+    case "buena": return buena(`Buena jugada.${mejor}`);
     case "libro": return buena(`Jugada de apertura conocida (teoría).`);
   }
-  // Jugadas malas: intentamos explicar por qué (en tercera persona, por colores,
-  // porque la jugada puede ser tuya o de tu rival).
   const otro = yo === "w" ? "las negras" : "las blancas";
   const Otro = otro[0].toUpperCase() + otro.slice(1);
+  const soyYo = yo === colorUsuario;
+  const tuya = chip(m.fenAntes, m.san, "error");
+  const paso = (et, html) => `<p class="paso"><span class="et">${et}</span>${html}</p>`;
+  const jugaste = paso(soyYo ? "Jugaste" : "Se jugó", tuya);
+  const eraMejor = m.mejorSan ? paso("Era mejor", chip(m.fenAntes, m.mejorSan, "mejor")) : "";
+
   if (teniaMate && !(despues.mate != null && Math.sign(despues.mate) === Math.sign(antes.mate)))
-    return { texto: `Había mate en ${Math.abs(antes.mate)} y se deja escapar. ${mejor}`, tipo: "mate_perdido" };
-  if (rivalMate) return { texto: `Permite a ${otro} dar mate en ${Math.abs(despues.mate)}. ${mejor}`, tipo: "mate_contra" };
+    return { texto: jugaste + paso("Qué pasa", `Había mate en ${Math.abs(antes.mate)} y se deja escapar.`) + eraMejor, tipo: "mate_perdido" };
+  if (rivalMate) {
+    const r1 = despues.pv[0] ? sanDe(m.fen, despues.pv[0]) : null;
+    const cuando = r1 ? `${Otro} juegan ${chip(m.fen, r1, "jugada")} y dan mate en ${Math.abs(despues.mate)}.` : `${Otro} pueden dar mate en ${Math.abs(despues.mate)}.`;
+    return { texto: jugaste + paso("Qué pasa", cuando) + eraMejor, tipo: "mate_contra" };
+  }
   const g = new Chess(m.fen);
   const antesMat = material(new Chess(m.fenAntes), yo);
   const respuesta = despues.pv[0] ? jugarUci(g, despues.pv[0]) : null;
   for (const u of despues.pv.slice(1, 4)) jugarUci(g, u);
   const perdido = antesMat - material(g, yo);
+  const grave = m.clase === "blunder" || m.clase === "error" || m.clase === "oportunidad";
   let porque = "";
-  if (perdido >= 2 && respuesta) {
-    porque = respuesta.captured
-      ? `${Otro} responden <b>${respuesta.san}</b> y ganan ${perdido >= 3 ? "material" : "al menos un peón"} (${NOMBRE_PIEZA[respuesta.captured]}).`
-      : `Tras <b>${respuesta.san}</b> se acaba perdiendo material.`;
-  } else if (respuesta) {
-    porque = `${Otro} pueden responder <b>${respuesta.san}</b> y su posición mejora mucho.`;
+  if (respuesta) {
+    const rc = chip(m.fen, respuesta.san, "jugada");
+    if (perdido >= 2 && respuesta.captured)
+      porque = `${Otro} responden ${rc} y capturan ${artPieza(respuesta.captured)}; en las jugadas siguientes se acaba perdiendo material.`;
+    else if (perdido >= 2) porque = `${Otro} responden ${rc} y, unas jugadas después, se acaba perdiendo material.`;
+    else if (respuesta.captured) porque = `${Otro} responden ${rc} y capturan ${artPieza(respuesta.captured)}.`;
+    else porque = `La mejor respuesta de ${otro} es ${rc} y su posición ${grave ? "mejora mucho" : "mejora"}.`;
   }
   const tipo = perdido >= 3 ? "material" : "tactica";
   if (m.clase === "oportunidad")
-    return { texto: `La jugada anterior era un error de ${otro} y no se aprovecha. ${mejor}`, tipo };
-  const titulo = { imprecision: "Imprecisión", error: "Error", blunder: "Error grave (blunder)" }[m.clase];
-  return { texto: `${titulo}. ${porque} ${mejor}`.trim(), tipo };
+    return { texto: jugaste + paso("Qué pasa", `La jugada anterior de ${otro} era un error y no se aprovecha.`) + eraMejor, tipo };
+  return { texto: jugaste + (porque ? paso("Qué pasa", porque) : "") + eraMejor, tipo };
 }
+const artPieza = (t) => ({ p: "un peón", n: "un caballo", b: "un alfil", r: "una torre", q: "la dama", k: "el rey" })[t];
 
 // ------------------------------------------------------------------ corregir una jugada
 /**

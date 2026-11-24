@@ -4,6 +4,7 @@
 import { apuntarProgreso, todoElProgreso, todosDeUsuario } from "../almacen.js";
 import { corregirJugada, revisar, textoEval } from "../analizador.js";
 import { FLECHA, Tablero, disposicion, fichaJugador } from "../tablero.js";
+import { chip, corta, usarTablero } from "../notacion.js";
 import { $, Chess, esc, fecha, resumen } from "../util.js";
 
 const PISTAS = {
@@ -35,6 +36,7 @@ export async function montar(vista, { estado }) {
     puedeMover: () => estadoEj === "pensando" && !!actual,
     alMover: (m) => comprobar(m),
   });
+  usarTablero(tablero);
 
   async function cargar() {
     const [partidas, analisis, progreso] = await Promise.all([
@@ -82,7 +84,7 @@ export async function montar(vista, { estado }) {
         <select id="f-tipo"><option value="">Todos los tipos</option><option value="material">Pierdes material</option>
           <option value="mate_contra">Permites mate</option><option value="mate_perdido">Mate no visto</option>
           <option value="tactica">Táctico</option></select>
-        <select id="f-gravedad"><option value="graves">Blunders y errores</option><option value="blunder">Solo blunders</option>
+        <select id="f-gravedad"><option value="graves">Errores graves y errores</option><option value="blunder">Solo errores graves</option>
           <option value="todos">Incluir imprecisiones</option></select>
       </div>
       <p class="suave pequeno">${ejercicios.length} ejercicios de tus partidas · ${intentados} intentados · ${resueltos} resueltos · ${cola.length} en cola</p>`;
@@ -91,7 +93,7 @@ export async function montar(vista, { estado }) {
       $("#cuerpo").innerHTML = filtros + `<div class="comentario"><p>No hay ejercicios con estos filtros.</p></div>`;
     } else {
       const lineaHtml = linea ? `<p class="linea-texto">${linea.san.map((s, i) =>
-        `<span class="${i + 1 === linea.paso ? "actual" : ""}" data-p="${i + 1}">${esc(s)}</span>`).join(" ")}</p>` : "";
+        `<span class="${i + 1 === linea.paso ? "actual" : ""}" data-p="${i + 1}">${corta(linea.fens[i], s)}</span>`).join(" ")}</p>` : "";
       $("#cuerpo").innerHTML = filtros + `
         <div class="comentario ${clase}">
           <div class="cabeza"><b>Juegas con ${actual.color === "w" ? "blancas" : "negras"}. ¿Cuál es la mejor jugada?</b></div>
@@ -151,11 +153,11 @@ export async function montar(vista, { estado }) {
       primerIntento = false;
     }
     if (acierto) {
-      const extra = r.esLaMejor ? "¡Es la jugada de Stockfish!" : `Stockfish prefería <b>${esc(r.mejorSan)}</b>, pero la tuya también es buena.`;
-      mostrarSolucion(r, `✔ <b>${esc(m.san)}</b> funciona. ${extra}`, "ok");
+      const extra = r.esLaMejor ? "¡Es la jugada de Stockfish!" : `Stockfish prefería ${chip(actual.fen, r.mejorSan, "mejor")}, pero la tuya también es buena.`;
+      mostrarSolucion(r, `✔ ${chip(actual.fen, m.san, "jugada")} funciona. ${extra}`, "ok");
     } else {
       estadoEj = "fallado";
-      pintarPanel(`✘ <b>${esc(m.san)}</b> no es lo mejor: pierdes ${r.perdida.toFixed(0)} puntos de probabilidad de ganar
+      pintarPanel(`✘ ${chip(actual.fen, m.san, "error")} no es lo mejor: pierdes ${r.perdida.toFixed(0)} puntos de probabilidad de ganar
         (evaluación ${textoEval(r.cpDespues, r.mateDespues)}).`, "mal");
     }
   }
@@ -175,8 +177,8 @@ export async function montar(vista, { estado }) {
       try { const x = g.move({ from: u.slice(0, 2), to: u.slice(2, 4), promotion: u[4] }); linea.fens.push(x.after); linea.san.push(x.san); linea.uci.push(x.lan); }
       catch { break; }
     }
-    linea.mensaje = `${mensaje ? mensaje + "<br>" : ""}En la partida jugaste <b class="txt-mal">${esc(actual.tuJugada)}</b>.
-      Lo mejor era <b class="txt-bien">${esc(r.mejorSan)}</b>. Recorre la línea de Stockfish con ▶:`;
+    linea.mensaje = `${mensaje ? mensaje + "<br>" : ""}En la partida jugaste ${chip(actual.fen, actual.tuJugada, "error")}.
+      Lo mejor era ${chip(actual.fen, r.mejorSan, "mejor")}. Recorre la línea de Stockfish con ▶:`;
     linea.clase = clase;
     irLinea(0);
   }

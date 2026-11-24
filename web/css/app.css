@@ -475,3 +475,99 @@ tr.analizando-ahora { background: rgba(63, 181, 174, .12); }
   .barrita { width: 48px; }
   .error-top { gap: 10px; }
 }
+
+/* ============================================================ MODO CLARO (fase 2) */
+/* Notación: los tres formatos van en el HTML; se enseña solo el elegido */
+.n-sen, .n-esp, .n-ing { display: none; }
+html[data-notacion="sencilla"] .n-sen,
+html[data-notacion="espanola"] .n-esp,
+html[data-notacion="inglesa"] .n-ing { display: inline; }
+.n-sen small { color: var(--suave); font-weight: 600; font-size: .82em; }
+.pz { font-size: 1.1em; line-height: 1; margin-right: 1px; display: inline-block; font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "DejaVu Sans", sans-serif; font-weight: 400; vertical-align: -0.08em; }
+
+/* Chips de jugada pulsables */
+.chip {
+  display: inline-block; max-width: 100%; padding: 1px 9px; margin: 1px 1px; border-radius: 14px; font-weight: 700; cursor: pointer;
+  background: rgba(106, 167, 232, .16); border: 1px solid rgba(106, 167, 232, .5); color: var(--texto);
+  line-height: 1.6; vertical-align: baseline;
+}
+.chip:hover, .chip:focus-visible { background: rgba(106, 167, 232, .32); outline: none; }
+.chip-error { background: rgba(229, 83, 75, .16); border-color: rgba(229, 83, 75, .55); }
+.chip-error:hover, .chip-error:focus-visible { background: rgba(229, 83, 75, .32); }
+.chip-mejor { background: rgba(63, 181, 174, .16); border-color: rgba(63, 181, 174, .6); }
+.chip-mejor:hover, .chip-mejor:focus-visible { background: rgba(63, 181, 174, .32); }
+.chip .n-sen small { font-weight: 600; }
+
+.cm-chessboard .markers .marker.marca-chip { fill: rgba(106, 167, 232, .5); }
+.cm-chessboard .flecha-chip-jugada .arrow-head { fill: #6aa7e8; }
+.cm-chessboard .flecha-chip-jugada .arrow-line { stroke: #6aa7e8; opacity: .9; stroke-linecap: round; }
+.cm-chessboard .flecha-chip-error .arrow-head { fill: var(--c-blunder); }
+.cm-chessboard .flecha-chip-error .arrow-line { stroke: var(--c-blunder); opacity: .9; stroke-linecap: round; }
+.cm-chessboard .flecha-chip-mejor .arrow-head { fill: var(--c-mejor); }
+.cm-chessboard .flecha-chip-mejor .arrow-line { stroke: var(--c-mejor); opacity: .95; stroke-linecap: round; }
+
+/* Ajuste de notación */
+#ajuste-notacion { position: relative; margin-bottom: 8px; }
+.btn-notacion { width: 100%; text-align: left; }
+.menu-notacion {
+  position: absolute; left: 0; bottom: calc(100% + 6px); width: 300px; z-index: 80; background: var(--panel);
+  border: 1px solid var(--borde); border-radius: var(--radio); box-shadow: 0 10px 30px rgba(0,0,0,.55); padding: 8px;
+}
+.menu-notacion[hidden] { display: none; }
+.menu-titulo { color: var(--suave); font-size: .85rem; padding: 4px 8px 8px; }
+.menu-notacion button { display: block; width: 100%; text-align: left; margin-bottom: 6px; }
+.menu-notacion button span { display: block; color: var(--suave); font-size: .82rem; font-weight: 400; margin-top: 2px; }
+.menu-notacion button.activo { border-color: var(--acento); background: rgba(63, 181, 174, .15); }
+
+/* Comentario de la revisión en pasos */
+.comentario .paso { margin: 8px 0; line-height: 1.55; }
+.comentario .paso .et { color: var(--suave); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; display: block; }
+.comentario .evalpal { font-size: .95rem; padding: 6px 10px; background: var(--fondo); border-radius: 8px; margin: 8px 0; }
+.comentario .evalpal small { color: var(--suave); }
+.jug .n-sen .pz { font-size: 1em; }
+
+/* Leyenda de iconos */
+.icono[data-clase] { cursor: pointer; }
+.leyenda-icono { margin: 8px 0; padding: 8px 12px; background: var(--fondo); border-radius: 8px; font-size: .92rem; display: flex; gap: 10px; align-items: center; }
+.leyenda-lista { display: grid; gap: 6px; font-size: .9rem; margin: 10px 0 0; }
+.leyenda-lista > div { display: flex; gap: 8px; align-items: baseline; }
+
+/* PC: letra algo mayor en el panel derecho */
+@media (min-width: 761px) {
+  .panel-derecho .cuerpo { font-size: 1.05rem; }
+  .lista-jugadas { font-size: 1.02rem; }
+  .comentario p { line-height: 1.5; }
+}
+@media (max-width: 760px) {
+  .btn-notacion { min-height: 34px; width: auto; padding: 4px 10px; }
+  #ajuste-notacion { position: fixed; top: 9px; left: 142px; z-index: 52; margin: 0; }
+  .menu-notacion { position: fixed; left: 12px; right: 12px; width: auto; top: calc(var(--alto-cab) + 6px); bottom: auto; }
+  .lista-jugadas .jug { padding: 9px 11px; font-size: 1.02rem; }
+  .lista-jugadas .num { padding: 9px 2px 9px 8px; }
+  .chip { padding: 2px 8px; }
+}
+
+/* Leyenda de iconos */
+.hoja-leyenda { position: fixed; inset: 0; z-index: 100; background: rgba(0, 0, 0, .55); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.caja-ley { background: var(--panel); border: 1px solid var(--borde); border-radius: var(--radio); width: min(480px, 100%); max-height: min(86vh, 700px); overflow-y: auto; padding: 14px 16px 6px; }
+.cab-ley { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 1.1rem; }
+.cerrar-ley { min-width: 40px; }
+.fila-ley { display: flex; gap: 12px; align-items: flex-start; padding: 8px 8px; border-radius: 8px; }
+.fila-ley .icono { margin: 2px 0 0; width: 24px; height: 24px; font-size: 13px; }
+.fila-ley b { display: block; }
+.fila-ley span:not(.icono) { color: var(--suave); font-size: .9rem; }
+.fila-ley.elegida { background: var(--panel-2); outline: 1px solid var(--acento); }
+@media (max-width: 760px) { .hoja-leyenda { align-items: flex-end; padding: 0; } .caja-ley { width: 100%; border-radius: 16px 16px 0 0; max-height: 80vh; } }
+
+/* Entrenar: guía paso a paso */
+.guia { margin: 8px 0; padding: 8px 10px; background: rgba(63, 181, 174, .14); border-radius: 8px; line-height: 1.5; }
+.et { color: var(--suave); font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; margin-right: 8px; }
+.ajustes-guia { display: flex; gap: 14px; flex-wrap: wrap; margin: 4px 0 10px; font-size: .92rem; }
+.pasos-linea { margin: 8px 0 12px; }
+.pasos-linea summary { cursor: pointer; font-weight: 700; margin-bottom: 6px; }
+.pasos-linea ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.pasos-linea li { padding: 5px 8px; border-radius: 8px; border-left: 3px solid var(--borde); background: var(--panel-2); line-height: 1.9; }
+.pasos-linea li.mio { border-left-color: var(--acento); }
+.pasos-linea li.hecho { opacity: .55; }
+.pasos-linea li.ahora { outline: 1px solid var(--aviso); background: #3a3420; }
+.pasos-linea .quien { color: var(--suave); font-size: .78rem; text-transform: uppercase; margin-right: 6px; }

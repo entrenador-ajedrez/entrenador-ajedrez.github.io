@@ -12,6 +12,12 @@ import { PromotionDialog } from "../vendor/cm-chessboard/src/extensions/promotio
 // Tipos de marca propios (el color lo pone nuestro CSS).
 const MARCA_ULTIMA = { class: "marca-ultima", slice: "markerSquare" };
 const MARCA_SELECCION = { class: "marca-seleccion", slice: "markerSquare" };
+const MARCA_CHIP = { class: "marca-chip", slice: "markerSquare" };
+const FLECHAS_CHIP = {
+  jugada: { class: "flecha-chip-jugada" },
+  error: { class: "flecha-chip-error" },
+  mejor: { class: "flecha-chip-mejor" },
+};
 export const FLECHA = {
   mejor: { class: "flecha-mejor" },
   jugada: { class: "flecha-jugada" },
@@ -150,7 +156,7 @@ export class Tablero {
     this.tablero.removeMarkers(MARCA_ULTIMA);
     if (uci) {
       this.tablero.addMarker(MARCA_ULTIMA, uci.slice(0, 2));
-      this.tablero.addMarker(MARCA_ULTIMA, uci.slice(2, 4));
+      if (uci.slice(2, 4) !== uci.slice(0, 2)) this.tablero.addMarker(MARCA_ULTIMA, uci.slice(2, 4));
     }
   }
 
@@ -158,7 +164,21 @@ export class Tablero {
     if (uci) this.tablero.addArrow(tipo, uci.slice(0, 2), uci.slice(2, 4));
   }
 
+  // Resalte temporal de un chip de jugada: flecha + casillas de salida y llegada.
+  resaltarChip(desde, hasta, tipo = "jugada") {
+    this.quitarResalteChip();
+    this.tablero.addMarker(MARCA_CHIP, desde);
+    this.tablero.addMarker(MARCA_CHIP, hasta);
+    this.tablero.addArrow(FLECHAS_CHIP[tipo] || FLECHAS_CHIP.jugada, desde, hasta);
+  }
+
+  quitarResalteChip() {
+    this.tablero.removeMarkers(MARCA_CHIP);
+    for (const t of Object.values(FLECHAS_CHIP)) this.tablero.removeArrows(t);
+  }
+
   quitarFlechas() {
+    this.quitarResalteChip();
     this.tablero.removeArrows();
   }
 

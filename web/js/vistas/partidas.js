@@ -1,6 +1,7 @@
 // Pantalla "Mis partidas": lista de partidas guardadas en la memoria.
 // Puedes elegir qué partidas analizar (una a una o todas) y parar el análisis cuando quieras.
 
+import { aperturaEs } from "../lenguaje.js";
 import { todosDeUsuario } from "../almacen.js";
 import { alCambiarLote, analizarVarias, detenerAnalisis, estadoLote, revisar } from "../analizador.js";
 import { $, MOTIVOS, RITMOS, esc, fecha, resumen } from "../util.js";
@@ -73,7 +74,7 @@ export async function montar(vista, { estado, sincronizarAhora }) {
         <td class="c-color"><span class="pieza-color ${p.r.color}"></span>${p.r.color === "w" ? "Blancas" : "Negras"}</td>
         <td class="c-res"><span class="res-${p.r.resultado}">${p.r.resultado[0].toUpperCase() + p.r.resultado.slice(1)}</span>
             <span class="suave">${MOTIVOS[p.r.motivo] || ""}</span></td>
-        <td class="c-ap">${esc(p.r.apertura)}</td>
+        <td class="c-ap">${esc(aperturaEs(p.r.apertura))}</td>
         <td class="c-ritmo">${RITMOS[p.time_class] || esc(p.time_class)}</td>
         <td class="c-prec">${p.precision != null ? `<b class="prec-mini">${p.precision.toFixed(1)}%</b>`
           : p.url === enCurso ? `<span class="suave">analizando…</span>` : `<span class="suave">—</span>`}</td>

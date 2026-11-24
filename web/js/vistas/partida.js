@@ -8,15 +8,17 @@ import { obtener, todosDeUsuario } from "../almacen.js";
 import { AnalisisCancelado, CLASES, MALAS, analisisGuardado, analizarPartida, revisar, textoEval } from "../analizador.js";
 import { MATE, motor, probGanar } from "../motor.js";
 import { FLECHA, Tablero } from "../tablero.js";
+import { aperturaEs, evalPalabras } from "../lenguaje.js";
+import { corta, negrita, usarTablero } from "../notacion.js";
 import { $, Chess, MOTIVOS, esc, fecha, formatoReloj, leerPartida, resumen } from "../util.js";
 
 const FRASE = {
   brillante: "es brillante", genial: "es genial", mejor: "es la mejor", excelente: "es excelente",
   buena: "es buena", libro: "es de libro", imprecision: "es una imprecisión", error: "es un error",
-  oportunidad: "es una oportunidad perdida", blunder: "es un blunder",
+  oportunidad: "es una oportunidad perdida", blunder: "es un error grave",
 };
 
-export async function montar(vista, { parametro, estado }) {
+export async function montar(vista, { parametro, parametros = [], estado }) {
   const partida = (await todosDeUsuario("partidas", estado.usuario)).find((p) => p.id === parametro);
   if (!partida) {
     vista.innerHTML = `<p>No encuentro esa partida. <a href="#/partidas">Volver a la lista</a></p>`;
@@ -52,7 +54,7 @@ export async function montar(vista, { parametro, estado }) {
   let revision = null;      // resultado de revisar() cuando el análisis está listo
   let progreso = 0;         // 0..1 mientras se analiza
   let modo = "resumen";     // resumen | paso | reintento
-  let ply = 0;              // jugada de la partida en pantalla (0 = inicio)
+  let ply = Math.max(0, Math.min(Number(parametros[1]) || 0, jugadas.length)); // jugada en pantalla (0 = inicio; #/partida/<id>/<n> abre en la n)
   let variante = null;      // { desde, jugadas: [{san, uci, fen}], paso, titulo }
   let reintento = null;     // { mensaje, clase }
   let consulta = 0;         // para descartar evaluaciones antiguas
@@ -71,6 +73,7 @@ export async function montar(vista, { parametro, estado }) {
     puedeMover: () => modo !== "reintento" || !reintento.hecho,
     alMover: (m) => (modo === "reintento" ? intentar(m) : mover(m)),
   });
+  usarTablero(tablero);
   $("#barra").classList.toggle("girada", r.color === "b");
 
   // ------------------------------------------------------------ jugadores y relojes
@@ -96,7 +99,7 @@ export async function montar(vista, { parametro, estado }) {
 
   // ------------------------------------------------------------ panel derecho
   function icono(clase, grande = false) {
-    return `<span class="icono c-${clase} ${grande ? "grande" : ""}" title="${CLASES[clase].nombre}">${CLASES[clase].simbolo}</span>`;
+    return `<span class="icono c-${clase} ${grande ? "grande" : ""}" data-clase="${clase}" role="button" title="${CLASES[clase].nombre}: toca para ver qué significa">${CLASES[clase].simbolo}</span>`;
   }
 
   function htmlResumen() {
@@ -118,7 +121,7 @@ export async function montar(vista, { parametro, estado }) {
         </table>
         ${htmlGrafica()}
         <button class="principal ancho" id="btn-empezar">Empezar revisión ▸</button>
-        <p class="suave pequeno">${fecha(partida.end_time)} · ${esc(r.apertura)} ·
+        <p class="suave pequeno">${fecha(partida.end_time)} · ${esc(aperturaEs(r.apertura))} ·
           <span class="res-${r.resultado}">${r.resultado}</span> ${MOTIVOS[r.motivo] || ""} ·
           <a href="${esc(partida.url)}" target="_blank" rel="noopener">ver en chess.com</a></p>
       </div>`;
@@ -140,9 +143,10 @@ export async function montar(vista, { parametro, estado }) {
     const m = revision.jugadas[ply - 1];
     const puedeReintentar = MALAS.has(m.clase);
     return `<div class="comentario c-${m.clase}">
-      <div class="cabeza">${icono(m.clase, true)}<b>${esc(m.san)} ${FRASE[m.clase]}</b>
+      <div class="cabeza">${icono(m.clase, true)}<b>${corta(m.fenAntes, m.san)} ${FRASE[m.clase]}</b>
         <span class="ev">${textoEval(m.cp, m.mate)}</span></div>
-      <p>${m.comentario}</p>
+      ${m.comentario.startsWith("<") ? m.comentario : `<p>${m.comentario}</p>`}
+      <div class="evalpal">${evalPalabras(m.cp, m.mate)} <small>(${textoEval(m.cp, m.mate)})</small></div>
       <div class="botones">
         ${m.mejorUci ? `<button id="btn-mejor">◆ Mejor</button>` : ""}
         ${puedeReintentar ? `<button id="btn-reintentar">↺ Reintentar</button>` : ""}
@@ -157,7 +161,7 @@ export async function montar(vista, { parametro, estado }) {
       else if (i === 0) html += `<span class="num">1.</span><span></span>`;
       const clase = revision?.jugadas[i].clase;
       const marca = clase && clase !== "buena" && clase !== "excelente" ? icono(clase) : "";
-      html += `<span class="jug ${!variante && modo !== "reintento" && i + 1 === ply ? "actual" : ""}" data-n="${i + 1}">${marca}${esc(j.san)}</span>`;
+      html += `<span class="jug ${!variante && modo !== "reintento" && i + 1 === ply ? "actual" : ""}" data-n="${i + 1}">${marca}${corta(i === 0 ? inicio : jugadas[i - 1].fen, j.san)}</span>`;
     });
     return `<div class="lista-jugadas">${html}</div>`;
   }
@@ -193,7 +197,7 @@ export async function montar(vista, { parametro, estado }) {
       $("#btn-empezar").onclick = () => { modo = "paso"; ir(1); };
     } else {
       const aviso = variante ? `<div class="variante-aviso"><span>${esc(variante.titulo)}:
-          <b>${variante.jugadas.slice(0, variante.paso).map((j) => esc(j.san)).join(" ") || "…"}</b>
+          <b>${variante.jugadas.slice(0, variante.paso).map((j, k) => corta(k === 0 ? fenPartida(variante.desde) : variante.jugadas[k - 1].fen, j.san)).join(" ") || "…"}</b>
           ${vivo ? `<span class="ev">${textoEval(vivo.cp, vivo.mate)}</span>` : ""}</span>
           <button id="btn-volver">Volver a la partida</button></div>` : "";
       c.innerHTML = htmlComentario() + aviso + htmlJugadas() + htmlGrafica();
@@ -250,7 +254,7 @@ export async function montar(vista, { parametro, estado }) {
       ponerBarra(m ? m.cp : revision.evalInicial, m ? m.mate : null);
       if (m && modo === "paso") {
         ponerIcono(m);
-        if (m.mejorUci && MALAS.has(m.clase)) tablero.flecha(m.mejorUci, FLECHA.mejor);
+        if (m.mejorUci && MALAS.has(m.clase)) { tablero.flecha(m.uci, FLECHA.error); tablero.flecha(m.mejorUci, FLECHA.mejor); }
       }
     }
     if (variante?.mostrarFlecha && variante.paso < variante.jugadas.length)
@@ -354,8 +358,8 @@ export async function montar(vista, { parametro, estado }) {
     modo = "reintento";
     variante = null; vivo = null;
     reintento = {
-      ply: n, fen: m.fenAntes, hecho: false, clase: "",
-      mensaje: `Juegas con ${m.color === "w" ? "blancas" : "negras"}. En la partida jugaste <b>${esc(m.san)}</b>. ¿Encuentras algo mejor?`,
+      ply: n, fen: m.fenAntes, fenIni: m.fenAntes, hecho: false, clase: "",
+      mensaje: `Juegas con ${m.color === "w" ? "blancas" : "negras"}. En la partida jugaste ${negrita(m.fenAntes, m.san)}. ¿Encuentras algo mejor?`,
     };
     pintar();
   }
@@ -377,10 +381,10 @@ export async function montar(vista, { parametro, estado }) {
     vivo = { cp: l.cp, mate: l.mate };
     if (x.lan === antes.pv[0] || perdida < 5) {
       reintento.clase = "ok";
-      reintento.mensaje = `✔ ¡Bien! <b>${esc(x.san)}</b> ${x.lan === antes.pv[0] ? "es la mejor jugada." : "es una buena jugada."}`;
+      reintento.mensaje = `✔ ¡Bien! ${negrita(reintento.fenIni, x.san)} ${x.lan === antes.pv[0] ? "es la mejor jugada." : "es una buena jugada."}`;
     } else {
       reintento.clase = "mal";
-      reintento.mensaje = `✘ <b>${esc(x.san)}</b> tampoco es buena: pierdes ${perdida.toFixed(0)} puntos de probabilidad de ganar.`;
+      reintento.mensaje = `✘ ${negrita(reintento.fenIni, x.san)} tampoco es buena: pierdes ${perdida.toFixed(0)} puntos de probabilidad de ganar.`;
     }
     pintar(false);
   }

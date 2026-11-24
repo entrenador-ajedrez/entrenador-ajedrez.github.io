@@ -5,6 +5,8 @@ import { fijarUsuarioActual, usuarioActual } from "./almacen.js";
 import { sincronizar } from "./chesscom.js";
 import { alCambiarLote, detenerAnalisis } from "./analizador.js";
 import { $, $$, esc } from "./util.js";
+import { montarAjuste, usarTablero } from "./notacion.js";
+import "./leyenda.js";
 import * as vistaInicio from "./vistas/inicio.js";
 import * as vistaPartidas from "./vistas/partidas.js";
 import * as vistaPartida from "./vistas/partida.js";
@@ -37,6 +39,7 @@ let desmontar = null;
 
 async function navegar() {
   if (desmontar) { desmontar(); desmontar = null; }
+  usarTablero(null);
   // "#/jugar/<fen>/w" -> nombre "jugar", parametros ["<fen>", "w"] (los datos van codificados)
   const [, nombre = "", ...resto] = location.hash.split("/");
   const parametros = resto.map((x) => decodeURIComponent(x));
@@ -111,6 +114,7 @@ async function arrancar() {
     return;
   }
   pintarUsuario();
+  montarAjuste($("#ajuste-notacion"));
   window.addEventListener("hashchange", navegar);
   await navegar();
   if (estado.usuario) sincronizarAhora(); // cada vez que se abre: traer partidas nuevas
