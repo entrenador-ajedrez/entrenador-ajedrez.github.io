@@ -12,3 +12,6 @@ __pycache__/
 
 # Configuración local de Claude Code (rutas de este ordenador)
 .claude/
+
+# capturas de revisión (llevan el usuario de chess.com)
+revision/
