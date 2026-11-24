@@ -13,7 +13,12 @@ Todo lo que pide Elías se apunta aquí (fecha y estado) antes de hacerse.
 
 5. ⏳ Notación para principiantes: mezcla en la que manden las indicaciones sobre el tablero (flechas, casillas,
    «♞ Caballo a f3»), con la notación como apoyo. Fase 1 (24-11): simulación con 5 jugadores de distinto nivel
-   en móvil y PC → ✅ hecha, informe en revision/simulacion-1.md (media 6,9). Fase 2 (esperando su sí): construir «modo claro». Fase 3: repetir simulación y publicar.
+   en móvil y PC → ✅ hecha, informe en revision/simulacion-1.md (media 6,9). Fase 2 ✅ (24-11, commit 3f20323, SIN publicar): «modo claro» hecho — ajuste Aa «Notación: Sencilla/Española/Inglesa»
+   (js/notacion.js), chips de jugada pulsables con flecha y casillas (también en Informe: abre la posición), comentario en
+   3 pasos con evaluación en palabras, «error grave», aperturas en español (js/lenguaje.js), leyenda de iconos (js/leyenda.js),
+   Entrenar con guía paso a paso / flecha de ayuda / Pista que resalta la pieza, tira de jugadas más grande en móvil.
+   Fase 3 (en curso): simulación 2 con 5 subagentes → revision/simulacion-2.md; arreglar lo principal; luego enseñar a Elías
+   y, si dice «publicar», push a main y comprobar el despliegue.
 
 ## Pendiente / ideas
 - Probarlo en el iPhone real (Safari → Compartir → «Añadir a pantalla de inicio»). Ver PARA_TI.md si aparece algo.

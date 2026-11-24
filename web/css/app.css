@@ -571,3 +571,4 @@ html[data-notacion="inglesa"] .n-ing { display: inline; }
 .pasos-linea li.hecho { opacity: .55; }
 .pasos-linea li.ahora { outline: 1px solid var(--aviso); background: #3a3420; }
 .pasos-linea .quien { color: var(--suave); font-size: .78rem; text-transform: uppercase; margin-right: 6px; }
+.comentario .cabeza .ev { white-space: nowrap; }
