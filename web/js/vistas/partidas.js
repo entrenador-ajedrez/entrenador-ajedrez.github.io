@@ -33,7 +33,8 @@ export async function montar(vista, { estado, sincronizarAhora }) {
         </tr></thead>
         <tbody id="filas"><tr><td colspan="8" class="cargando">Cargando…</td></tr></tbody>
       </table>
-    </div>`;
+    </div>
+    <p class="solo-movil pie-movil"><a href="#/creditos">Créditos y licencias</a></p>`;
 
   let partidas = [];
   const seleccion = new Set(); // urls elegidas para analizar
@@ -67,14 +68,14 @@ export async function montar(vista, { estado, sincronizarAhora }) {
       <tr data-id="${esc(p.id)}" class="${p.url === enCurso ? "analizando-ahora" : ""}">
         <td class="col-check">${p.analizada ? `<span class="suave" title="Ya analizada">✓</span>`
           : `<input type="checkbox" data-url="${esc(p.url)}" ${seleccion.has(p.url) ? "checked" : ""} title="Elegir para analizar">`}</td>
-        <td>${fecha(p.end_time)}</td>
-        <td>${esc(p.r.rival.username)} <span class="suave">(${p.r.rival.rating ?? "?"})</span></td>
-        <td><span class="pieza-color ${p.r.color}"></span>${p.r.color === "w" ? "Blancas" : "Negras"}</td>
-        <td><span class="res-${p.r.resultado}">${p.r.resultado[0].toUpperCase() + p.r.resultado.slice(1)}</span>
+        <td class="c-fecha">${fecha(p.end_time)}</td>
+        <td class="c-rival">${esc(p.r.rival.username)} <span class="suave">(${p.r.rival.rating ?? "?"})</span></td>
+        <td class="c-color"><span class="pieza-color ${p.r.color}"></span>${p.r.color === "w" ? "Blancas" : "Negras"}</td>
+        <td class="c-res"><span class="res-${p.r.resultado}">${p.r.resultado[0].toUpperCase() + p.r.resultado.slice(1)}</span>
             <span class="suave">${MOTIVOS[p.r.motivo] || ""}</span></td>
-        <td>${esc(p.r.apertura)}</td>
-        <td>${RITMOS[p.time_class] || esc(p.time_class)}</td>
-        <td>${p.precision != null ? `<b class="prec-mini">${p.precision.toFixed(1)}%</b>`
+        <td class="c-ap">${esc(p.r.apertura)}</td>
+        <td class="c-ritmo">${RITMOS[p.time_class] || esc(p.time_class)}</td>
+        <td class="c-prec">${p.precision != null ? `<b class="prec-mini">${p.precision.toFixed(1)}%</b>`
           : p.url === enCurso ? `<span class="suave">analizando…</span>` : `<span class="suave">—</span>`}</td>
       </tr>`).join("")
       : `<tr><td colspan="8" class="suave">No hay partidas con estos filtros.</td></tr>`;
@@ -117,7 +118,7 @@ export async function montar(vista, { estado, sincronizarAhora }) {
     barra.innerHTML = `
       <span class="suave">${pendientes.length ? `${pendientes.length} sin analizar.` : "Todas tus partidas están analizadas ✓"}
         ${e.parado ? " Análisis parado: lo analizado hasta ese momento está guardado." : ""}</span>
-      <button class="principal" id="btn-seleccionadas" ${n ? "" : "disabled"}>Analizar seleccionadas (${n})</button>
+      <button class="principal" id="btn-seleccionadas" ${n ? "" : "disabled"}>Analizar <span class="solo-pc">seleccionadas</span><span class="solo-movil-inline">elegidas</span> (${n})</button>
       <button id="btn-todas" ${pendientes.length ? "" : "disabled"}>Analizar todas (${pendientes.length})</button>
       ${n ? `<button id="btn-limpiar" class="enlace">Quitar selección</button>` : ""}`;
     $("#btn-seleccionadas").onclick = () => analizar(partidas.filter((p) => seleccion.has(p.url)));

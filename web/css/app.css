@@ -15,10 +15,10 @@
   --aviso: #e8c547;
 
   /* Clasificación de jugadas */
-  --c-mejor: #3fbf8f;
-  --c-excelente: #74c26c;
-  --c-buena: #9cb8a6;
-  --c-libro: #b8946a;
+  --c-mejor: #3fb5ae;
+  --c-excelente: #4f9e86;
+  --c-buena: #7f9890;
+  --c-libro: #8a8f99;
   --c-imprecision: #e8c547;
   --c-error: #f08a3c;
   --c-blunder: #e5534b;
@@ -51,6 +51,8 @@ input, select {
 }
 .suave { color: var(--suave); }
 .oculto { display: none !important; }
+.solo-movil, .solo-movil-inline { display: none; }
+@media (max-width: 760px) { .solo-movil { display: block; } .solo-movil-inline { display: inline; } .pie-movil { text-align: center; font-size: .85rem; margin-top: 18px; } }
 
 /* ------------------------------------------------------------ estructura */
 .app { display: grid; grid-template-columns: 190px 1fr; min-height: 100vh; }
@@ -74,13 +76,6 @@ input, select {
 .usuario-chip button { margin-top: 6px; padding: 4px 8px; font-size: .8rem; width: 100%; }
 main#vista { padding: 20px 24px; min-width: 0; }
 
-@media (max-width: 760px) {
-  .app { grid-template-columns: 1fr; }
-  .lateral { position: static; height: auto; flex-direction: row; flex-wrap: wrap; padding: 10px; }
-  .logo { padding: 6px 10px; }
-  .lateral .pie-lateral { margin: 0; width: 100%; }
-  main#vista { padding: 14px 16px; }
-}
 
 /* ------------------------------------------------------------ inicio */
 .inicio { max-width: 520px; margin: 8vh auto; text-align: center; }
@@ -160,9 +155,6 @@ table.partidas tbody tr:hover { background: var(--panel-2); }
   .tablero { width: min(calc(100vw - 32px - 34px), 640px); }
   .panel-derecho { max-width: none; width: 100%; max-height: none; }
 }
-@media (max-width: 760px) {
-  .tablero { width: calc(100vw - 32px - 34px); }
-}
 
 /* Lista de jugadas */
 .lista-jugadas {
@@ -205,16 +197,17 @@ table.partidas tbody tr:hover { background: var(--panel-2); }
 /* ------------------------------------------------------------ revisión */
 .tablero { position: relative; }
 .icono, .icono-jugada {
-  display: inline-grid; place-items: center; border-radius: 50%; font-weight: 900; color: #fff;
+  /* insignias cuadradas redondeadas (diseño propio) */
+  display: inline-grid; place-items: center; border-radius: 28%; font-weight: 900; color: #fff;
   font-family: system-ui, sans-serif; line-height: 1; flex: none;
 }
 .icono { width: 18px; height: 18px; font-size: 10px; margin-right: 5px; vertical-align: -3px; }
 .icono.grande { width: 30px; height: 30px; font-size: 15px; margin-right: 10px; }
 .icono-jugada {
   position: absolute; z-index: 5; pointer-events: none;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, .45); border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .45); border: 1.5px solid rgba(15, 22, 26, .55);
 }
-.c-brillante { background: #29b6c8; }
+.c-brillante { background: #a970e0; }
 .c-genial { background: #5b8bd6; }
 .c-mejor { background: var(--c-mejor); }
 .c-excelente { background: var(--c-excelente); }
@@ -262,7 +255,7 @@ button.ancho { width: 100%; padding: 12px; font-size: 1.05rem; }
 .grafica .media { stroke: #888; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
 .grafica .cursor { stroke: var(--acento); stroke-width: 2; vector-effect: non-scaling-stroke; }
 .grafica .punto { stroke: #fff; stroke-width: 1; vector-effect: non-scaling-stroke; }
-.grafica .punto.c-brillante { fill: #29b6c8; } .grafica .punto.c-genial { fill: #5b8bd6; }
+.grafica .punto.c-brillante { fill: #a970e0; } .grafica .punto.c-genial { fill: #5b8bd6; }
 .grafica .punto.c-imprecision { fill: var(--c-imprecision); } .grafica .punto.c-error { fill: var(--c-error); }
 .grafica .punto.c-oportunidad { fill: #c4527a; } .grafica .punto.c-blunder { fill: var(--c-blunder); }
 
@@ -346,3 +339,139 @@ tr.analizando-ahora { background: rgba(63, 181, 174, .12); }
 .creditos { max-width: 720px; }
 .creditos li { margin: 8px 0; }
 .cargando { color: var(--suave); padding: 30px 0; }
+
+/* ============================================================ MÓVIL (≤ 760 px)
+   Cabecera fina arriba (logo + usuario), pestañas fijas abajo (al alcance del pulgar),
+   el tablero ocupa todo el ancho y los controles ◀ ▶ quedan siempre a la vista. */
+@media (max-width: 760px) {
+  :root { --alto-cab: 52px; --alto-tabs: 62px; --seguro-abajo: env(safe-area-inset-bottom, 0px); }
+  body { -webkit-tap-highlight-color: transparent; }
+  .app { display: block; }
+  main#vista {
+    padding: calc(var(--alto-cab) + 12px) 12px calc(var(--alto-tabs) + var(--seguro-abajo) + 20px);
+  }
+  /* en el iPhone, un campo con letra < 16 px hace zoom al tocarlo */
+  input, select, textarea { font-size: 16px; }
+  button, select, a.boton { min-height: 40px; }
+  .solo-pc { display: none; }
+
+  /* Pestañas abajo */
+  .lateral {
+    position: fixed; left: 0; right: 0; bottom: 0; top: auto; height: auto; z-index: 50;
+    flex-direction: row; gap: 0; padding: 4px 4px calc(4px + var(--seguro-abajo));
+    background: #15181c; border-top: 1px solid var(--borde);
+  }
+  .lateral a.nav {
+    flex: 1; flex-direction: column; gap: 2px; padding: 6px 2px; min-height: 52px; justify-content: center;
+    font-size: .72rem; font-weight: 600; color: var(--suave); border-radius: 10px;
+  }
+  .lateral a.nav .ico { width: auto; font-size: 1.25rem; line-height: 1; }
+  .lateral a.nav.activa { background: none; color: var(--acento); }
+  .lateral a.nav:hover { background: none; }
+
+  /* Cabecera arriba: el logo y el usuario salen de la barra y se fijan arriba */
+  .logo {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50; height: var(--alto-cab);
+    display: flex; align-items: center; padding: 0 16px; font-size: 1.1rem;
+    background: #15181c; border-bottom: 1px solid var(--borde);
+  }
+  .lateral .pie-lateral { margin: 0; }
+  .lateral .pie-lateral > a { display: none; } /* créditos: enlace en el pie de Mis partidas */
+  #usuario-chip { position: fixed; top: 0; right: 10px; z-index: 51; height: var(--alto-cab); display: flex; align-items: center; }
+  .usuario-chip { display: flex; align-items: center; gap: 8px; margin: 0; padding: 0; background: none; }
+  .usuario-chip .suave { display: none; }
+  .usuario-chip b { max-width: 34vw; font-size: .9rem; }
+  .usuario-chip button { margin: 0; width: auto; min-height: 34px; padding: 4px 10px; }
+  /* análisis en marcha: franja justo encima de las pestañas */
+  #lote-global { position: fixed; left: 8px; right: 8px; bottom: calc(var(--alto-tabs) + var(--seguro-abajo) + 6px); z-index: 49; }
+  .lote-global { margin: 0; flex-direction: row; align-items: center; box-shadow: 0 4px 16px rgba(0,0,0,.5); border: 1px solid var(--borde); }
+  .lote-global .barra-progreso { flex: 1; }
+  .lote-global button { min-height: 34px; }
+
+  /* Inicio */
+  .inicio { margin: 4vh auto; }
+  .inicio h1 { font-size: 1.6rem; }
+
+  /* Mis partidas: filtros en dos columnas y cada partida como una tarjeta */
+  .cabecera-vista h1 { font-size: 1.35rem; }
+  .filtros { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .filtros select { width: 100%; min-width: 0; }
+  .filtros #btn-actualizar { grid-column: 1 / -1; }
+  .filtros.compactos { display: flex; }
+  .barra-analisis { padding: 10px; }
+  .barra-analisis > span { flex-basis: 100%; }
+  .barra-analisis button { flex: 1; }
+  .tabla-scroll { overflow: visible; }
+  table.partidas, table.partidas tbody { display: block; background: none; }
+  table.partidas thead tr { display: flex; align-items: center; gap: 10px; padding: 0 12px 8px; }
+  table.partidas thead th { display: none; border: 0; padding: 0; }
+  table.partidas thead th.col-check { display: block; }
+  table.partidas thead th.col-check::after { content: "Elegir todas las visibles"; color: var(--suave); font-size: .85rem; margin-left: 10px; white-space: nowrap; }
+  table.partidas thead tr { justify-content: flex-start; }
+  table.partidas thead th.col-check { display: flex; align-items: center; width: auto; }
+  table.partidas tbody tr[data-id] {
+    display: grid; grid-template-columns: 34px 1fr auto; grid-template-areas:
+      "check rival prec" "check res prec" "check ap ap" "check meta meta";
+    gap: 2px 8px; align-items: center; padding: 10px 12px; margin-bottom: 8px;
+    background: var(--panel); border-radius: var(--radio); border: 1px solid var(--borde);
+  }
+  table.partidas td { border: 0; padding: 0; white-space: normal; }
+  table.partidas td.col-check { grid-area: check; align-self: center; width: auto; }
+  table.partidas td.c-rival { grid-area: rival; font-weight: 700; }
+  table.partidas td.c-res { grid-area: res; font-size: .9rem; }
+  table.partidas td.c-prec { grid-area: prec; text-align: right; }
+  table.partidas td.c-ap { grid-area: ap; font-size: .85rem; color: var(--suave); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  table.partidas td.c-fecha, table.partidas td.c-color, table.partidas td.c-ritmo { grid-area: meta; font-size: .8rem; color: var(--suave); }
+  table.partidas td.c-fecha { justify-self: start; }
+  table.partidas td.c-color { justify-self: center; }
+  table.partidas td.c-ritmo { justify-self: end; }
+  table.partidas tbody tr:not([data-id]) { display: block; }
+  .col-check input { width: 22px; height: 22px; }
+  .prec-mini { font-size: .9rem; padding: 3px 8px; }
+
+  /* Pantallas con tablero */
+  .con-tablero { gap: 10px; }
+  .col-tablero { width: fit-content; max-width: 100%; margin: 0 auto; }
+  .tablero-y-barra { gap: 5px; }
+  .barra-eval { width: 14px; }
+  .barra-eval .numero { font-size: 8px; }
+  /* todo el ancho en el móvil, pero sin pasarse de alto en tabletas (los controles deben verse) */
+  .tablero { width: min(calc(100vw - 24px - 19px), calc(100vh - 330px)); min-width: 260px; }
+  .jugador { padding: 4px 0 4px 19px; gap: 8px; }
+  .jugador .avatar { width: 26px; height: 26px; }
+  .jugador .nombre { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .jugador .reloj { min-width: 62px; padding: 2px 8px; }
+  .panel-derecho { min-width: 0; overflow: visible; }
+  .panel-derecho .titulo-panel { padding: 10px 14px; font-size: 1rem; }
+  .panel-derecho .cuerpo { padding: 10px 12px; overflow: visible; }
+  /* los botones ◀ ▶ se quedan pegados encima de las pestañas */
+  .panel-derecho .controles {
+    position: sticky; bottom: calc(var(--alto-tabs) + var(--seguro-abajo)); z-index: 40;
+    background: var(--panel); border-radius: 0 0 var(--radio) var(--radio); box-shadow: 0 -6px 14px rgba(0,0,0,.35);
+  }
+  .panel-derecho .controles button { min-height: 46px; font-size: 1.2rem; }
+  /* lista de jugadas: una tira horizontal que se desliza con el dedo */
+  .lista-jugadas {
+    position: relative; display: flex; overflow-x: auto; gap: 2px; padding: 4px 0 8px; margin-bottom: 6px;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .lista-jugadas::-webkit-scrollbar { display: none; }
+  .lista-jugadas .num { padding: 6px 2px 6px 8px; flex: none; }
+  .lista-jugadas .jug { flex: none; padding: 6px 8px; white-space: nowrap; }
+  .comentario { padding: 10px 12px; }
+  .botones button { flex: 1 1 auto; }
+  .pestanas { overflow-x: auto; }
+  .pestanas button { flex: none; }
+  .subpestanas { overflow-x: auto; }
+  .subpestana { flex: none; white-space: nowrap; }
+
+  /* Informe */
+  .kpis { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .kpi { padding: 12px; }
+  .kpi b { font-size: 1.3rem; }
+  .dos-columnas { gap: 0; }
+  .tabla-informe { font-size: .85rem; }
+  .tabla-informe th, .tabla-informe td { padding: 6px; }
+  .barrita { width: 48px; }
+  .error-top { gap: 10px; }
+}

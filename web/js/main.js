@@ -54,7 +54,7 @@ function pintarUsuario() {
   const chip = $("#usuario-chip");
   if (!estado.usuario) { chip.innerHTML = ""; return; }
   chip.innerHTML = `<div class="usuario-chip"><span class="suave">Conectado como</span>
-    <b>${esc(estado.usuario)}</b><button id="btn-cambiar">Cambiar de usuario</button></div>`;
+    <b>${esc(estado.usuario)}</b><button id="btn-cambiar">Cambiar<span class="solo-pc"> de usuario</span></button></div>`;
   $("#btn-cambiar").onclick = async () => {
     estado.usuario = null;
     await fijarUsuarioActual(null);
@@ -85,7 +85,8 @@ async function entrar(usuario) {
   estado.usuario = usuario.toLowerCase();
   await fijarUsuarioActual(estado.usuario);
   pintarUsuario();
-  location.hash = "#/partidas";
+  // Si ya estábamos en #/partidas no hay "hashchange": pintamos la lista a mano.
+  if (location.hash === "#/partidas") navegar(); else location.hash = "#/partidas";
 }
 
 // Indicador del análisis en la barra lateral, con "Parar", visible en todas las pantallas.

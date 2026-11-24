@@ -17,13 +17,13 @@ const VERSION = 1; // súbelo si cambia lo que se guarda: obliga a re-analizar
 export const CLASES = {
   brillante:   { nombre: "Brillante",          simbolo: "!!", orden: 0 },
   genial:      { nombre: "Genial",             simbolo: "!",  orden: 1 },
-  mejor:       { nombre: "Mejor",              simbolo: "★",  orden: 2 },
-  excelente:   { nombre: "Excelente",          simbolo: "✓",  orden: 3 },
-  buena:       { nombre: "Buena",              simbolo: "✓",  orden: 4 },
-  libro:       { nombre: "Libro",              simbolo: "≡",  orden: 5 },
+  mejor:       { nombre: "Mejor",              simbolo: "◆",  orden: 2 },
+  excelente:   { nombre: "Excelente",          simbolo: "+",  orden: 3 },
+  buena:       { nombre: "Buena",              simbolo: "○",  orden: 4 },
+  libro:       { nombre: "Libro",              simbolo: "L",  orden: 5 },
   imprecision: { nombre: "Imprecisión",        simbolo: "?!", orden: 6 },
   error:       { nombre: "Error",              simbolo: "?",  orden: 7 },
-  oportunidad: { nombre: "Oportunidad perdida", simbolo: "✗", orden: 8 },
+  oportunidad: { nombre: "Oportunidad perdida", simbolo: "↯", orden: 8 },
   blunder:     { nombre: "Blunder",            simbolo: "??", orden: 9 },
 };
 export const MALAS = new Set(["imprecision", "error", "oportunidad", "blunder"]);

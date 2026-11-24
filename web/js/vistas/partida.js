@@ -132,7 +132,7 @@ export async function montar(vista, { parametro, estado }) {
         <p>${reintento.mensaje}</p>
         <div class="botones">
           ${reintento.hecho && reintento.clase === "mal" ? `<button id="btn-otra">Probar otra vez</button>` : ""}
-          <button id="btn-ver-mejor">★ Ver la mejor</button>
+          <button id="btn-ver-mejor">◆ Ver la mejor</button>
           <button id="btn-salir">Volver a la partida</button>
         </div></div>`;
     }
@@ -144,7 +144,7 @@ export async function montar(vista, { parametro, estado }) {
         <span class="ev">${textoEval(m.cp, m.mate)}</span></div>
       <p>${m.comentario}</p>
       <div class="botones">
-        ${m.mejorUci ? `<button id="btn-mejor">★ Mejor</button>` : ""}
+        ${m.mejorUci ? `<button id="btn-mejor">◆ Mejor</button>` : ""}
         ${puedeReintentar ? `<button id="btn-reintentar">↺ Reintentar</button>` : ""}
         <button class="principal" id="btn-siguiente">Siguiente ▸</button>
       </div></div>`;
@@ -199,8 +199,12 @@ export async function montar(vista, { parametro, estado }) {
       c.innerHTML = htmlComentario() + aviso + htmlJugadas() + htmlGrafica();
       enlazarBotones();
     }
-    c.querySelector(".lista-jugadas .actual")?.scrollIntoView({ block: "nearest" });
     const lista = c.querySelector(".lista-jugadas");
+    const actual = c.querySelector(".lista-jugadas .actual");
+    if (actual && lista.scrollWidth > lista.clientWidth + 2) {
+      // En el móvil la lista es una tira horizontal: centramos la jugada sin mover la página.
+      lista.scrollLeft = actual.offsetLeft - lista.clientWidth / 2 + actual.offsetWidth / 2;
+    } else actual?.scrollIntoView({ block: "nearest" });
     if (lista) lista.onclick = (ev) => {
       const n = ev.target.closest("[data-n]")?.dataset.n;
       if (n) { if (revision && modo === "resumen") modo = "paso"; salirDeTodo(); ir(Number(n)); }
