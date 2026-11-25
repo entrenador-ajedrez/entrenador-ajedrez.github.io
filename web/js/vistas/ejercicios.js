@@ -5,7 +5,7 @@ import { apuntarProgreso, todoElProgreso, todosDeUsuario } from "../almacen.js";
 import { corregirJugada, revisar, textoEval } from "../analizador.js";
 import { FLECHA, Tablero, disposicion, fichaJugador } from "../tablero.js";
 import { chip, corta, usarTablero } from "../notacion.js";
-import { $, Chess, esc, fecha, resumen } from "../util.js";
+import { $, Chess, ICONO_CTRL, esc, fecha, resumen } from "../util.js";
 
 const PISTAS = {
   material: "En la partida acabaste perdiendo material. Antes de mover, mira qué piezas quedan sin defender.",
@@ -17,8 +17,8 @@ const FASES = { apertura: "Apertura", "medio juego": "Medio juego", final: "Fina
 
 export async function montar(vista, { estado }) {
   vista.innerHTML = disposicion("Ejercicios", {
-    controles: `<button data-l="0" title="Inicio">⏮</button><button data-l="-1" title="Atrás">◀</button>
-                <button data-l="1" title="Adelante">▶</button><button data-l="99" title="Final">⏭</button>`,
+    controles: `<button data-l="0" title="Inicio" aria-label="Inicio">${ICONO_CTRL.inicio}</button><button data-l="-1" title="Atrás" aria-label="Atrás">${ICONO_CTRL.atras}</button>
+                <button data-l="1" title="Adelante" aria-label="Adelante">${ICONO_CTRL.adelante}</button><button data-l="99" title="Final" aria-label="Final">${ICONO_CTRL.fin}</button>`,
   });
   $("#barra").classList.add("oculto"); // sin barra: daría pistas
 
@@ -178,7 +178,7 @@ export async function montar(vista, { estado }) {
       catch { break; }
     }
     linea.mensaje = `${mensaje ? mensaje + "<br>" : ""}En la partida jugaste ${chip(actual.fen, actual.tuJugada, "error")}.
-      Lo mejor era ${chip(actual.fen, r.mejorSan, "mejor")}. Pulsa ▶ para ver la línea de Stockfish en el tablero (x = captura, + = jaque, # = mate):`;
+      Lo mejor era ${chip(actual.fen, r.mejorSan, "mejor")}. Pulsa ▶︎ para ver la línea de Stockfish en el tablero (x = captura, + = jaque, # = mate):`;
     linea.clase = clase;
     irLinea(0);
   }

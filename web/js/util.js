@@ -98,3 +98,14 @@ export function tiempoBase(control) {
 export function fecha(ts) {
   return new Date(ts * 1000).toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
+
+/** Iconos de los botones de avanzar/retroceder: dibujados, para que se vean igual en móvil y PC
+ *  (los símbolos ▶ ⏮ ⏭ salen como emoji en el iPhone y distintos entre sí). */
+const SVG = (d, extra = "") => `<svg viewBox="0 0 24 24" aria-hidden="true"><path ${extra} d="${d}"/></svg>`;
+export const ICONO_CTRL = {
+  inicio: SVG("M6 5h2.4v14H6zM19 5v14L9.5 12z"),
+  atras: SVG("M16.5 5v14L7 12z"),
+  adelante: SVG("M7.5 5v14L17 12z"),
+  fin: SVG("M15.6 5H18v14h-2.4zM5 5v14l9.5-7z"),
+  girar: SVG("M4.5 12a7.5 7.5 0 1 0 2.6-5.7M4 4v4.2h4.2", 'fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"'),
+};

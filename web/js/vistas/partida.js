@@ -11,7 +11,7 @@ import { FLECHA, Tablero } from "../tablero.js";
 import { aperturaEs, evalPalabras } from "../lenguaje.js";
 import { corta, negrita, usarTablero } from "../notacion.js";
 import { SIGNIFICADO } from "../leyenda.js";
-import { $, Chess, MOTIVOS, esc, fecha, formatoReloj, leerPartida, resumen } from "../util.js";
+import { $, Chess, ICONO_CTRL, MOTIVOS, esc, fecha, formatoReloj, leerPartida, resumen } from "../util.js";
 
 const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 const FRASE = {
@@ -43,11 +43,11 @@ export async function montar(vista, { parametro, parametros = [], estado }) {
         <div class="titulo-panel">Revisión de partida</div>
         <div class="cuerpo" id="cuerpo"></div>
         <div class="controles">
-          <button data-ir="inicio" title="Inicio">⏮</button>
-          <button data-ir="atras" title="Atrás (←)">◀</button>
-          <button data-ir="adelante" title="Adelante (→)">▶</button>
-          <button data-ir="fin" title="Final">⏭</button>
-          <button data-ir="girar" title="Girar tablero">⟲</button>
+          <button data-ir="inicio" title="Inicio" aria-label="Inicio">${ICONO_CTRL.inicio}</button>
+          <button data-ir="atras" title="Atrás (←)" aria-label="Atrás">${ICONO_CTRL.atras}</button>
+          <button data-ir="adelante" title="Adelante (→)" aria-label="Adelante">${ICONO_CTRL.adelante}</button>
+          <button data-ir="fin" title="Final" aria-label="Final">${ICONO_CTRL.fin}</button>
+          <button data-ir="girar" title="Girar tablero" aria-label="Girar tablero">${ICONO_CTRL.girar}</button>
         </div>
       </aside>
     </div>`;
@@ -141,7 +141,7 @@ export async function montar(vista, { parametro, parametros = [], estado }) {
           <button id="btn-salir">Volver a la partida</button>
         </div></div>`;
     }
-    if (ply === 0) return `<div class="comentario"><p>Posición inicial. Avanza con ▶ o con la flecha →.</p></div>`;
+    if (ply === 0) return `<div class="comentario"><p>Posición inicial. Avanza con ▶︎ o con la flecha →.</p></div>`;
     const m = revision.jugadas[ply - 1];
     const puedeReintentar = MALAS.has(m.clase);
     return `<div class="comentario c-${m.clase}">

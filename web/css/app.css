@@ -604,3 +604,6 @@ html[data-notacion="inglesa"] .n-ing { display: inline; }
    touch-action: manipulation quita el zoom por doble toque; el zoom con dos dedos se mantiene. */
 html, body, button, a, .chip, .jug, .controles, .tablero { touch-action: manipulation; }
 button, .chip, .jug, .controles, .tablero, .lateral { -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+
+/* Botones de avanzar/retroceder: iconos dibujados, iguales en móvil y PC */
+.controles button svg { width: 1.25em; height: 1.25em; fill: currentColor; display: block; margin: 0 auto; pointer-events: none; }
