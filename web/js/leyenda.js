@@ -5,8 +5,8 @@ import { CLASES, iconoSvg } from "./analizador.js";
 export const SIGNIFICADO = {
   brillante: "Un sacrificio que merece la pena: parece que pierdes material, pero la posición lo compensa.",
   genial: "La única jugada buena de la posición: cualquier otra empeoraba mucho.",
-  mejor: "La jugada que Stockfish recomienda.",
-  excelente: "Casi tan buena como la mejor.",
+  mejor: "La mejor jugada, la que Stockfish recomienda.",
+  excelente: "Casi tan buena como la excelente.",
   buena: "Una jugada correcta, aunque había algo mejor.",
   libro: "Jugada de apertura conocida (teoría): no hace falta pensarla.",
   imprecision: "Pierde un poco de ventaja (entre 5 y 10 puntos de probabilidad de ganar).",

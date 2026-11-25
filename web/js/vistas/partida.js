@@ -15,7 +15,7 @@ import { $, Chess, MOTIVOS, esc, fecha, formatoReloj, leerPartida, resumen } fro
 
 const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 const FRASE = {
-  brillante: "es brillante", genial: "es genial", mejor: "es la mejor", excelente: "es excelente",
+  brillante: "es brillante", genial: "es genial", mejor: "es excelente", excelente: "es muy buena",
   buena: "es buena", libro: "es de libro", imprecision: "es una imprecisión", error: "es un error",
   oportunidad: "es una oportunidad perdida", blunder: "es un error grave",
 };

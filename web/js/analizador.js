@@ -18,8 +18,8 @@ const VERSION = 1; // súbelo si cambia lo que se guarda: obliga a re-analizar
 export const CLASES = {
   brillante:   { nombre: "Brillante",          simbolo: "★", orden: 0 },
   genial:      { nombre: "Genial",             simbolo: "!",  orden: 1 },
-  mejor:       { nombre: "Mejor",              simbolo: "✔",  orden: 2 },
-  excelente:   { nombre: "Excelente",          simbolo: "+",  orden: 3 },
+  mejor:       { nombre: "Excelente",          simbolo: "✔",  orden: 2 },
+  excelente:   { nombre: "Muy buena",          simbolo: "+",  orden: 3 },
   buena:       { nombre: "Buena",              simbolo: "•",  orden: 4 },
   libro:       { nombre: "Libro",              simbolo: "L",  orden: 5 },
   imprecision: { nombre: "Imprecisión",        simbolo: "?!", orden: 6 },
@@ -271,8 +271,8 @@ function comentar(m, antes, despues, colorUsuario) {
   switch (m.clase) {
     case "brillante": return buena(`¡Sacrificio brillante! Entregas material, pero la posición lo compensa.`);
     case "genial": return buena(`¡La única jugada buena! Cualquier otra empeoraba mucho la posición.`);
-    case "mejor": return buena(teniaMate ? `Es la mejor: lleva al mate.` : `Es la mejor jugada.`);
-    case "excelente": return buena(`Excelente jugada, casi tan buena como la mejor.`);
+    case "mejor": return buena(teniaMate ? `Excelente: lleva al mate.` : `Excelente: es la mejor jugada.`);
+    case "excelente": return buena(`Muy buena jugada, casi tan buena como la excelente.`);
     case "buena": return buena(`Buena jugada.${mejor}`);
     case "libro": return buena(`Jugada de apertura conocida (teoría).`);
   }

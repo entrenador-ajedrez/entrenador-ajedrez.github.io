@@ -16,11 +16,11 @@
 
   /* Clasificación de jugadas */
   --c-mejor: #1fa84a;
-  --c-excelente: #5fb41f;
-  --c-buena: #a3c12f;
-  --c-libro: #8a93a3;
-  --c-imprecision: #e88a00;
-  --c-error: #ee6a2d;
+  --c-excelente: #0aa84a;
+  --c-buena: #a7cf3a;
+  --c-libro: #6e7b95;
+  --c-imprecision: #f2b705;
+  --c-error: #f07a1e;
   --c-blunder: #c2182b;
 
   /* Tablero */
@@ -207,15 +207,15 @@ table.partidas tbody tr:hover { background: var(--panel-2); }
   position: absolute; z-index: 5; pointer-events: none;
   box-shadow: 0 2px 6px rgba(0, 0, 0, .45); border: 1.5px solid rgba(15, 22, 26, .55);
 }
-.c-brillante { background: #0fb0c4; }
-.c-genial { background: #00a859; }
-.c-mejor { background: var(--c-mejor); }
+.c-brillante { background: #a22bff; }
+.c-genial { background: #1f4fff; }
+.c-mejor { background: #22bfe8; }
 .c-excelente { background: var(--c-excelente); }
 .c-buena { background: var(--c-buena); }
 .c-libro { background: var(--c-libro); }
 .c-imprecision { background: var(--c-imprecision); }
 .c-error { background: var(--c-error); }
-.c-oportunidad { background: #d9406a; }
+.c-oportunidad { background: #e0457b; }
 .c-blunder { background: var(--c-blunder); }
 
 .comentario {
@@ -255,9 +255,9 @@ button.ancho { width: 100%; padding: 12px; font-size: 1.05rem; }
 .grafica .media { stroke: #888; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
 .grafica .cursor { stroke: var(--acento); stroke-width: 2; vector-effect: non-scaling-stroke; }
 .grafica .punto { stroke: #fff; stroke-width: 1; vector-effect: non-scaling-stroke; }
-.grafica .punto.c-brillante { fill: #0fb0c4; } .grafica .punto.c-genial { fill: #00a859; }
+.grafica .punto.c-brillante { fill: #a22bff; } .grafica .punto.c-genial { fill: #1f4fff; } .grafica .punto.c-mejor { fill: #22bfe8; }
 .grafica .punto.c-imprecision { fill: var(--c-imprecision); } .grafica .punto.c-error { fill: var(--c-error); }
-.grafica .punto.c-oportunidad { fill: #d9406a; } .grafica .punto.c-blunder { fill: var(--c-blunder); }
+.grafica .punto.c-oportunidad { fill: #e0457b; } .grafica .punto.c-blunder { fill: var(--c-blunder); }
 
 .analizando { background: var(--panel-2); border-radius: var(--radio); padding: 12px 14px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
 .barra-progreso { height: 8px; background: var(--fondo); border-radius: 4px; overflow: hidden; }
