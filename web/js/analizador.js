@@ -16,17 +16,32 @@ const VERSION = 1; // súbelo si cambia lo que se guarda: obliga a re-analizar
 // ------------------------------------------------------------------ clasificaciones
 // Umbrales en puntos de "probabilidad de ganar" perdidos (los mismos que en el Python).
 export const CLASES = {
-  brillante:   { nombre: "Brillante",          simbolo: "!!", orden: 0 },
+  brillante:   { nombre: "Brillante",          simbolo: "★", orden: 0 },
   genial:      { nombre: "Genial",             simbolo: "!",  orden: 1 },
-  mejor:       { nombre: "Mejor",              simbolo: "◆",  orden: 2 },
+  mejor:       { nombre: "Mejor",              simbolo: "✔",  orden: 2 },
   excelente:   { nombre: "Excelente",          simbolo: "+",  orden: 3 },
-  buena:       { nombre: "Buena",              simbolo: "○",  orden: 4 },
+  buena:       { nombre: "Buena",              simbolo: "•",  orden: 4 },
   libro:       { nombre: "Libro",              simbolo: "L",  orden: 5 },
   imprecision: { nombre: "Imprecisión",        simbolo: "?!", orden: 6 },
   error:       { nombre: "Error",              simbolo: "?",  orden: 7 },
   oportunidad: { nombre: "Oportunidad perdida", simbolo: "↯", orden: 8 },
   blunder:     { nombre: "Error grave",        simbolo: "??", orden: 9 },
 };
+// Iconos dibujados con el mismo trazo (círculo de color + dibujo blanco), sin letras de distintas fuentes.
+const TRAZOS = {
+  brillante: "M8 4v10M8 20v.1M16 4v10M16 20v.1",
+  genial: "M12 4v10M12 20v.1",
+  mejor: "M5 12.5l5 5L19 7",
+  excelente: "M12 5v14M5 12h14",
+  buena: "M6 12h12",
+  libro: "M5 7h14M5 12h14M5 17h14",
+  imprecision: "M8 4v10M8 20v.1M16 14c0-3 3-3 3-6s-3-4-5-3M16 20v.1",
+  error: "M8 8c0-3 3-4 5-4s4 1.5 4 4c0 3-5 3-5 7M12 20v.1",
+  oportunidad: "M12 5v13M6 13l6 6 6-6",
+  blunder: "M6 6l12 12M18 6L6 18",
+};
+export const iconoSvg = (clase) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${TRAZOS[clase] || ""}"/></svg>`;
+
 export const MALAS = new Set(["imprecision", "error", "oportunidad", "blunder"]);
 
 // ------------------------------------------------------------------ analizar

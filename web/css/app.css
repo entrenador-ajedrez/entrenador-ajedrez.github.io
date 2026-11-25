@@ -15,13 +15,13 @@
   --aviso: #e8c547;
 
   /* Clasificación de jugadas */
-  --c-mejor: #3fb5ae;
-  --c-excelente: #4f9e86;
-  --c-buena: #7f9890;
-  --c-libro: #8a8f99;
-  --c-imprecision: #e8c547;
-  --c-error: #f08a3c;
-  --c-blunder: #e5534b;
+  --c-mejor: #1fa84a;
+  --c-excelente: #5fb41f;
+  --c-buena: #a3c12f;
+  --c-libro: #8a93a3;
+  --c-imprecision: #e88a00;
+  --c-error: #ee6a2d;
+  --c-blunder: #c2182b;
 
   /* Tablero */
   --casilla-clara: #e4e2d6;
@@ -198,7 +198,7 @@ table.partidas tbody tr:hover { background: var(--panel-2); }
 .tablero { position: relative; }
 .icono, .icono-jugada {
   /* insignias cuadradas redondeadas (diseño propio) */
-  display: inline-grid; place-items: center; border-radius: 28%; font-weight: 900; color: #fff;
+  display: inline-grid; place-items: center; border-radius: 50%; font-weight: 900; color: #fff;
   font-family: system-ui, sans-serif; line-height: 1; flex: none;
 }
 .icono { width: 18px; height: 18px; font-size: 10px; margin-right: 5px; vertical-align: -3px; }
@@ -207,15 +207,15 @@ table.partidas tbody tr:hover { background: var(--panel-2); }
   position: absolute; z-index: 5; pointer-events: none;
   box-shadow: 0 2px 6px rgba(0, 0, 0, .45); border: 1.5px solid rgba(15, 22, 26, .55);
 }
-.c-brillante { background: #a970e0; }
-.c-genial { background: #5b8bd6; }
+.c-brillante { background: #0fb0c4; }
+.c-genial { background: #00a859; }
 .c-mejor { background: var(--c-mejor); }
 .c-excelente { background: var(--c-excelente); }
 .c-buena { background: var(--c-buena); }
 .c-libro { background: var(--c-libro); }
-.c-imprecision { background: var(--c-imprecision); color: #3a2f00; }
+.c-imprecision { background: var(--c-imprecision); }
 .c-error { background: var(--c-error); }
-.c-oportunidad { background: #c4527a; }
+.c-oportunidad { background: #d9406a; }
 .c-blunder { background: var(--c-blunder); }
 
 .comentario {
@@ -255,9 +255,9 @@ button.ancho { width: 100%; padding: 12px; font-size: 1.05rem; }
 .grafica .media { stroke: #888; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
 .grafica .cursor { stroke: var(--acento); stroke-width: 2; vector-effect: non-scaling-stroke; }
 .grafica .punto { stroke: #fff; stroke-width: 1; vector-effect: non-scaling-stroke; }
-.grafica .punto.c-brillante { fill: #a970e0; } .grafica .punto.c-genial { fill: #5b8bd6; }
+.grafica .punto.c-brillante { fill: #0fb0c4; } .grafica .punto.c-genial { fill: #00a859; }
 .grafica .punto.c-imprecision { fill: var(--c-imprecision); } .grafica .punto.c-error { fill: var(--c-error); }
-.grafica .punto.c-oportunidad { fill: #c4527a; } .grafica .punto.c-blunder { fill: var(--c-blunder); }
+.grafica .punto.c-oportunidad { fill: #d9406a; } .grafica .punto.c-blunder { fill: var(--c-blunder); }
 
 .analizando { background: var(--panel-2); border-radius: var(--radio); padding: 12px 14px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
 .barra-progreso { height: 8px; background: var(--fondo); border-radius: 4px; overflow: hidden; }
@@ -596,3 +596,6 @@ html[data-notacion="inglesa"] .n-ing { display: inline; }
 @media (max-width: 400px) {
   .usuario-chip b { max-width: 24vw; }
 }
+
+/* Iconos de clase: dibujo blanco con el mismo trazo en todos */
+.icono svg, .icono-jugada svg { width: 66%; height: 66%; fill: none; stroke: currentColor; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }

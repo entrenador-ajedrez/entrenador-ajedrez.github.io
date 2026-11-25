@@ -1,6 +1,6 @@
 // Leyenda de iconos de clasificación: al tocar un icono (.icono[data-clase]) se explica qué significa.
 
-import { CLASES } from "./analizador.js";
+import { CLASES, iconoSvg } from "./analizador.js";
 
 export const SIGNIFICADO = {
   brillante: "Un sacrificio que merece la pena: parece que pierdes material, pero la posición lo compensa.",
@@ -24,7 +24,7 @@ function abrir(clase) {
   hoja = document.createElement("div");
   hoja.className = "hoja-leyenda";
   const fila = (c) => `<div class="fila-ley ${c === clase ? "elegida" : ""}">
-      <span class="icono c-${c}">${CLASES[c].simbolo}</span>
+      <span class="icono c-${c}">${iconoSvg(c)}</span>
       <div><b>${CLASES[c].nombre}</b><span>${SIGNIFICADO[c]}</span></div></div>`;
   const orden = Object.keys(CLASES).sort((a, b) => CLASES[a].orden - CLASES[b].orden);
   hoja.innerHTML = `<div class="caja-ley" role="dialog" aria-label="Qué significa cada icono">

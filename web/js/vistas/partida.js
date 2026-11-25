@@ -5,7 +5,7 @@
 //   - puedes mover piezas para explorar variantes (Stockfish las evalúa en directo)
 
 import { obtener, todosDeUsuario } from "../almacen.js";
-import { AnalisisCancelado, CLASES, MALAS, analisisGuardado, analizarPartida, revisar, textoEval } from "../analizador.js";
+import { AnalisisCancelado, CLASES, MALAS, iconoSvg, analisisGuardado, analizarPartida, revisar, textoEval } from "../analizador.js";
 import { MATE, motor, probGanar } from "../motor.js";
 import { FLECHA, Tablero } from "../tablero.js";
 import { aperturaEs, evalPalabras } from "../lenguaje.js";
@@ -101,7 +101,7 @@ export async function montar(vista, { parametro, parametros = [], estado }) {
 
   // ------------------------------------------------------------ panel derecho
   function icono(clase, grande = false) {
-    return `<span class="icono c-${clase} ${grande ? "grande" : ""}" data-clase="${clase}" role="button" title="${CLASES[clase].nombre}: toca para ver qué significa">${CLASES[clase].simbolo}</span>`;
+    return `<span class="icono c-${clase} ${grande ? "grande" : ""}" data-clase="${clase}" role="button" title="${CLASES[clase].nombre}: toca para ver qué significa" aria-label="${CLASES[clase].nombre}">${iconoSvg(clase)}</span>`;
   }
 
   function htmlResumen() {
@@ -137,7 +137,7 @@ export async function montar(vista, { parametro, parametros = [], estado }) {
         <p>${reintento.mensaje}</p>
         <div class="botones">
           ${reintento.hecho && reintento.clase === "mal" ? `<button id="btn-otra">Probar otra vez</button>` : ""}
-          <button id="btn-ver-mejor">◆ Ver la mejor</button>
+          <button id="btn-ver-mejor">✔ Ver la mejor</button>
           <button id="btn-salir">Volver a la partida</button>
         </div></div>`;
     }
@@ -150,7 +150,7 @@ export async function montar(vista, { parametro, parametros = [], estado }) {
       ${m.comentario.startsWith("<") ? m.comentario : `<p>${m.comentario}</p>`}
       <div class="evalpal">${cap(evalPalabras(m.cp, m.mate))} <small>(${textoEval(m.cp, m.mate)})</small></div>
       <div class="botones">
-        ${m.mejorUci ? `<button id="btn-mejor">◆ Mejor</button>` : ""}
+        ${m.mejorUci ? `<button id="btn-mejor">✔ Mejor</button>` : ""}
         ${puedeReintentar ? `<button id="btn-reintentar">↺ Reintentar</button>` : ""}
         <button class="principal" id="btn-siguiente">Siguiente ▸</button>
       </div></div>`;
@@ -279,7 +279,7 @@ export async function montar(vista, { parametro, parametros = [], estado }) {
     if (!casilla) return;
     const el = $("#icono-jugada");
     el.className = `icono-jugada c-${m.clase}`;
-    el.textContent = CLASES[m.clase].simbolo;
+    el.innerHTML = iconoSvg(m.clase);
     const t = casilla.width * 0.42;
     el.style.width = el.style.height = t + "px";
     el.style.fontSize = t * 0.5 + "px";
