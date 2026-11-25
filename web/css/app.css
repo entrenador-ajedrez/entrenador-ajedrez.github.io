@@ -599,3 +599,8 @@ html[data-notacion="inglesa"] .n-ing { display: inline; }
 
 /* Iconos de clase: dibujo blanco con el mismo trazo en todos */
 .icono svg, .icono-jugada svg { width: 66%; height: 66%; fill: none; stroke: currentColor; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Móvil: pulsar rápido varias veces (avanzar jugadas) no amplía la pantalla por error.
+   touch-action: manipulation quita el zoom por doble toque; el zoom con dos dedos se mantiene. */
+html, body, button, a, .chip, .jug, .controles, .tablero { touch-action: manipulation; }
+button, .chip, .jug, .controles, .tablero, .lateral { -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
