@@ -16,5 +16,8 @@ export function montar(vista) {
         <li>Datos de las partidas: <a href="https://www.chess.com/news/view/published-data-api" target="_blank" rel="noopener">API pública de chess.com</a>.
           Esta web no está afiliada a chess.com.</li>
       </ul>
+      <p class="suave">Visitas: la web cuenta de forma anónima cuántas personas la abren, con
+        <a href="https://www.goatcounter.com" target="_blank" rel="noopener">GoatCounter</a> (sin cookies, sin datos personales).
+        Tus partidas y análisis no salen de tu navegador.</p>
     </section>`;
 }
